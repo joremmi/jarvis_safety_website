@@ -2,20 +2,21 @@
 
 import ConsultationRoom from '@/components/ConsultationRoom';
 
-interface PageProps {
+type AdminConsultationPageProps = {
   params: {
     roomId: string;
   };
+  searchParams?: { [key: string]: string | string[] | undefined };
+};
+
+function AdminConsultationPage({ params }: AdminConsultationPageProps) {
+  const { roomId } = params;
+
+  return (
+    <div>
+      <ConsultationRoom roomId={roomId} />
+    </div>
+  );
 }
 
-export default function ConsultationPage({ params }: PageProps) {
-  return <ConsultationRoom roomId={params.roomId} />;
-}
-
-// Implementation for the actual consultation room
-// This would include:
-// - Video/audio streams for both parties
-// - Chat functionality
-// - Screen sharing
-// - Basic whiteboard
-// - Recording option 
+export default AdminConsultationPage;
