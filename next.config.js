@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['images.unsplash.com']
+    domains: [
+      // Add your image domains here
+      'your-storage-domain.com',
+      'firebasestorage.googleapis.com'
+    ],
   },
   webpack: (config) => {
     config.externals.push({

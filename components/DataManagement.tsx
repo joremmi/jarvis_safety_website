@@ -1,6 +1,8 @@
+// components/DataManagement.tsx
+
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { collection, query, getDocs, deleteDoc, doc, where } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import LoadingSpinner from './LoadingSpinner';
@@ -21,21 +23,21 @@ const DataManagement = () => {
   const [error, setError] = useState<string | null>(null);
   const [filterType, setFilterType] = useState('all');
 
-  // CRUD Operations
-  const fetchReports = async () => {
+  // Memoized fetchReports function
+  const fetchReports = useCallback(async () => {
     try {
       setLoading(true);
       const reportsRef = collection(firestore, 'reports');
-      const q = filterType !== 'all' 
+      const q = filterType !== 'all'
         ? query(reportsRef, where('type', '==', filterType))
         : query(reportsRef);
-      
+
       const querySnapshot = await getDocs(q);
       const reportsList = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Report[];
-      
+
       setReports(reportsList);
     } catch (err) {
       setError('Failed to fetch reports');
@@ -43,9 +45,7 @@ const DataManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-
+  }, [filterType]); // Include filterType as a dependency
 
   const deleteReport = async (id: string) => {
     try {
@@ -57,9 +57,10 @@ const DataManagement = () => {
     }
   };
 
+  // Use the memoized fetchReports in useEffect
   useEffect(() => {
     fetchReports();
-  }, [filterType]);
+  }, [fetchReports]);
 
   if (loading) return <LoadingSpinner size="large" />;
 
@@ -109,4 +110,4 @@ const DataManagement = () => {
   );
 };
 
-export default DataManagement; 
+export default DataManagement;

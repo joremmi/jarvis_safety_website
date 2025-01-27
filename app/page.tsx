@@ -6,6 +6,7 @@ import TestimonialSection from "@/components/Testimonial";
 import BlogSection from "@/components/Blog";
 import Link from 'next/link';
 import HeroCarousel from '@/components/HeroCarousel';
+import FeaturedBlogPosts from '@/components/FeaturedBlogPosts';
 
 export default function Home() {
   return (
@@ -60,6 +61,8 @@ export default function Home() {
       <section className="py-20 bg-gray-50">
         <ContactSection />
       </section>
+
+      <FeaturedBlogPosts />
 
     </main>
   );

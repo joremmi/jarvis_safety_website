@@ -1,8 +1,9 @@
 // lib/firebase.ts  
 
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,6 +16,10 @@ const firebaseConfig = {
     databaseURL: "https://jarvis-52c38-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
-export const app = initializeApp(firebaseConfig);
-export const firestore = getFirestore(app);
-export const database = getDatabase(app);
+// Initialize Firebase only if it hasn't been initialized already
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+const firestore = getFirestore(app);
+const database = getDatabase(app);
+const auth = getAuth(app);
+
+export { app, firestore, database, auth };

@@ -1,4 +1,5 @@
 // components/Team.tsx
+
 "use client";
 
 import React from 'react';
@@ -102,7 +103,9 @@ const TeamSection = () => {
                     <Image
                       src={member.image}
                       alt={member.name}
-                      className="w-40 h-40 object-cover rounded-full"
+                      width={160}
+                      height={160}
+                      className="object-cover rounded-full"
                     />
                   </div>
                   <div className="p-4">

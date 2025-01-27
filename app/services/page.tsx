@@ -7,6 +7,7 @@ import { fetchServices, Service } from "@/lib/services";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
+import ServicesSkeleton from '@/components/ServicesSkeleton';
 
 const categories = [
   "all",
@@ -101,7 +102,7 @@ const ServicesPage = () => {
     });
   }, [services, selectedCategory, selectedIndustry, priceRange]);
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) return <ServicesSkeleton />;
   if (error) return <div className="text-red-500">Failed to load services</div>;
   if (!services.length) return <div>No services found</div>;
 

@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import Chatbot from '@/components/Chatbot';
 import Providers from './providers';
+import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
 
 export const metadata = {
   title: "Jarvis Safety Consultancy",
@@ -33,12 +34,14 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       <body>
         <Providers>
           <ErrorBoundary>
-            <div className="flex flex-col min-h-screen">
-              <Header />
-              <main className="flex-grow">{children}</main>
-              <Footer />
-              <Chatbot />
-            </div>
+            <AdminAuthProvider>
+              <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+                <Chatbot />
+              </div>
+            </AdminAuthProvider>
           </ErrorBoundary>
         </Providers>
       </body>
