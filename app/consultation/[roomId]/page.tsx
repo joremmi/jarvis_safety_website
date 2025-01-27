@@ -6,7 +6,6 @@ type AdminConsultationPageProps = {
   params: {
     roomId: string;
   };
-  searchParams?: { [key: string]: string | string[] | undefined };
 };
 
 function AdminConsultationPage({ params }: AdminConsultationPageProps) {
