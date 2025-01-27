@@ -3,7 +3,7 @@ import React from 'react';
 export default function About() {
     return (
         <main className="min-h-screen py-16 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto mt-10">
                 <h1 className="text-4xl font-bold text-center mb-8">About Jarvis Safety</h1>
                 
                 <section className="mb-12">

@@ -2,149 +2,177 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ServiceSection from "../../components/Service";
+import { fetchServices, Service } from "@/lib/services";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import Sidebar from "@/components/Sidebar";
+import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+
+const categories = [
+  "all",
+  "Training Services",
+  "Audit Services",
+  "Policy Services",
+  "Compliance Services",
+  "Hazardous Material Services",
+  "Standardization Services",
+  "Medical Services"
+];
+
+const industries = [
+  "all",
+  "Manufacturing",
+  "Construction",
+  "Healthcare",
+  "Agriculture",
+  "Mining",
+  "Oil & Gas",
+  "Transportation"
+];
+
+const priceRanges = [
+  { label: "All Prices", value: "all" },
+  { label: "Under KES 30,000", value: "0-30000" },
+  { label: "KES 30,000 - 50,000", value: "30000-50000" },
+  { label: "Over KES 50,000", value: "50000+" }
+];
+
+function ServicesList({ services }: { services: Service[] }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {services.map((service) => (
+        <Link 
+          href={service.link} 
+          key={service.id}
+          className="group"
+        >
+          <div className="bg-white rounded-lg shadow-lg p-6 transition-transform duration-300 group-hover:-translate-y-1">
+            <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-600 transition-colors">
+              {service.name}
+            </h3>
+            <p className="text-gray-600 mb-4">
+              {service.description}
+            </p>
+            <div className="flex justify-between items-center">
+              <span className="text-blue-600 font-semibold">{service.price}</span>
+              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                {service.category}
+              </span>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
 
 const ServicesPage = () => {
-  const categories = [
-    {
-      title: "Training Services",
-      services: [
-        {
-          title: "QHSE Trainings",
-          description: "Comprehensive Quality, Health, Safety, and Environmental trainings to ensure workplace safety and compliance.",
-          link: "/services/qhse",
-        },
-        {
-          title: "Emergency Preparedness",
-          description: "Comprehensive planning and training to handle emergencies effectively and safeguard lives and assets.",
-          link: "/services/emergency-preparedness",
-        },
-      ],
-    },
-    {
-      title: "Audit Services",
-      services: [
-        {
-          title: "Audits",
-          description: "Thorough safety audits to identify risks and recommend actionable solutions.",
-          link: "/services/audits",
-        },
-        {
-          title: "Audit, Inspection & Risk Assessment Templates",
-          description: "Customizable templates for audits, inspections, risk assessments, PTW, LOTO, and more.",
-          link: "/services/templates",
-        },
-        {
-          title: "Plant Examinations",
-          description: "Detailed plant examinations to ensure compliance with safety regulations.",
-          link: "/services/plant-exams",
-        },
-      ],
-    },
-    {
-      title: "Policy Services",
-      services: [
-        {
-          title: "Safety, Fire, Energy & Environmental Policy",
-          description: "Development of tailored policies to enhance safety, fire prevention, energy efficiency, and environmental sustainability.",
-          link: "/services/policy",
-        },
-        {
-          title: "Safe Systems of Work (SSOWs)",
-          description: "Implementation of safe systems of work to minimize risks and ensure regulatory compliance.",
-          link: "/services/ssows",
-        },
-      ],
-    },
-    {
-      title: "Compliance Services",
-      backgroundImage: "/images/compliance-bg.jpg",
-      services: [
-        {
-          title: "ISO Compliance Guides",
-          description: "Step-by-step guidance on ISO compliance for standards like ISO 9001, ISO 14001, and ISO 45001.",
-          link: "/services/iso-compliance",
-        },
-        {
-          title: "NFPA Standards",
-          description: "Expert advice on meeting National Fire Protection Association (NFPA) standards for fire safety and prevention.",
-          link: "/services/nfpa",
-        },
-        {
-          title: "DGR (Dangerous Goods Regulations)",
-          description: "Consultancy on handling, transporting, and managing dangerous goods in compliance with IATA DGR standards.",
-          link: "/services/dgr",
-        },
-      ],
-    },
-    {
-      title: "Hazardous Material Services",
-      services: [
-        {
-          title: "HAZMAT Services",
-          description: "Specialized support for handling hazardous materials, including risk assessments and mitigation strategies.",
-          link: "/services/hazmat",
-        },
-      ],
-    },
-    {
-      title: "Standardization Services",
-      services: [
-        {
-          title: "Standardizations",
-          description: "Expert guidance on safety standardizations to meet industry benchmarks.",
-          link: "/services/standardizations",
-        },
-      ],
-    },
-    {
-      title: "Medical Services",
-      backgroundImage: "/images/medical-bg.jpg",
-      services: [
-        {
-          title: "Medical Examinations",
-          description: "Health checks and medical examinations for your workforce.",
-          link: "/services/medical-exams",
-        },
-      ],
-    },
-  ];
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedIndustry, setSelectedIndustry] = useState<string>("all");
+  const [priceRange, setPriceRange] = useState<string>("all");
 
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  // Updated React Query options
+  const { data: services = [], isLoading, error } = useQuery({
+    queryKey: ['services'],
+    queryFn: fetchServices,
+    staleTime: 1000 * 60 * 5,    // Data considered fresh for 5 minutes
+    gcTime: 1000 * 60 * 30,      // Changed from cacheTime to gcTime
+    refetchOnWindowFocus: false   // Prevent refetching when window regains focus
+  });
 
-  const sidebarItems = categories.map((category) => ({
-    title: category.title,
-    onClick: () => setSelectedCategory(category),
-  }));
+  const filteredServices = useMemo(() => {
+    return services.filter(service => {
+      const matchesCategory = selectedCategory === "all" || service.category === selectedCategory;
+      const matchesIndustry = selectedIndustry === "all" || service.industry.includes(selectedIndustry);
+      
+      const price = parseInt(service.price.replace(/[^0-9]/g, ''));
+      let matchesPrice = true;
+      
+      if (priceRange !== "all") {
+        const [min, max] = priceRange.split("-").map(Number);
+        if (max) {
+          matchesPrice = price >= min && price <= max;
+        } else {
+          matchesPrice = price >= min;
+        }
+      }
+
+      return matchesCategory && matchesIndustry && matchesPrice;
+    });
+  }, [services, selectedCategory, selectedIndustry, priceRange]);
+
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <div className="text-red-500">Failed to load services</div>;
+  if (!services.length) return <div>No services found</div>;
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <aside className="fixed top-0 left-0 w-64 h-screen bg-white border-r shadow-sm">
-        <Sidebar items={sidebarItems} />
-      </aside>
-      {/* Main Content */}
-      <main className="flex-1 ml-64 p-6">
-        <h1 className="text-4xl font-bold text-white mb-8">
-          {selectedCategory.title}
-        </h1>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-12 mt-12">
+        <h1 className="text-4xl font-bold text-center mb-12">Our Services</h1>
+        
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Sidebar */}
+          <div className="w-full md:w-64 space-y-6">
+            {/* Categories */}
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Categories</h3>
+              <select 
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full p-2 border rounded-md"
+              >
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category === 'all' ? 'All Categories' : category}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* Direct rendering of service sections */}
-        {selectedCategory.services.map((service, index) => (
-          <ServiceSection
-            key={index}
-            title={service.title}
-            description={service.description}
-            link={service.link}
-            category={selectedCategory.title} // Pass the category here
-          />
-        ))}
+            {/* Industries */}
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Industries</h3>
+              <select 
+                value={selectedIndustry}
+                onChange={(e) => setSelectedIndustry(e.target.value)}
+                className="w-full p-2 border rounded-md"
+              >
+                {industries.map((industry) => (
+                  <option key={industry} value={industry}>
+                    {industry === 'all' ? 'All Industries' : industry}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      </main>
+            {/* Price Range */}
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Price Range</h3>
+              <select 
+                value={priceRange}
+                onChange={(e) => setPriceRange(e.target.value)}
+                className="w-full p-2 border rounded-md"
+              >
+                {priceRanges.map((range) => (
+                  <option key={range.value} value={range.value}>
+                    {range.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Services Grid */}
+          <div className="flex-1">
+            <ServicesList services={filteredServices} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default ServicesPage;
+

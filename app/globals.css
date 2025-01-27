@@ -92,8 +92,8 @@
 }
 
 .bg-blk{
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.75) 0%, rgba(16, 16, 16, 0.844) 35%, transparent 100%);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(20px);
 }
 
 .bg{
@@ -111,4 +111,14 @@
 
 .h-fl{
   height: 100vh;
+}
+
+.text-bg{
+  color: var(--foreground);
+}
+
+.img-cstm{
+  filter: opacity(0.75);
+  background: #00000042;
+  border-radius: 50%;
 }

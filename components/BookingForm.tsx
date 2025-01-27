@@ -1,129 +1,172 @@
 "use client";
 
 import React, { useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { firestore } from "@/lib/firebase";
+import LoadingSpinner from "./LoadingSpinner";
 
-const BookingForm = ({ serviceName }: { serviceName: string }) => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  message: string;
+  service?: string;
+  status: string;
+  createdAt: any;
+}
+
+interface FormErrors {
+  [key: string]: string;
+}
+
+const BookingForm = ({ serviceName = "" }) => {
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phone: "",
     date: "",
     message: "",
+    service: serviceName,
+    status: "pending",
+    createdAt: null
   });
-
+  
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const validateForm = (): boolean => {
+    const errors: FormErrors = {};
+    if (!formData.name) errors.name = "Name is required";
+    if (!formData.email) errors.email = "Email is required";
+    if (!formData.phone) errors.phone = "Phone is required";
+    if (!formData.date) errors.date = "Date is required";
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    
+    if (!validateForm()) return;
 
     try {
-      // Save to Firestore
-      await addDoc(collection(db, "bookings"), {
-        service: serviceName,
-        ...formData,
-        timestamp: new Date(),
-      });
+      setLoading(true);
+      setError(null);
 
-      alert("Booking request submitted successfully!");
-      setFormData({ name: "", email: "", phone: "", date: "", message: "" });
-    } catch (error) {
-      console.error("Error submitting booking:", error);
-      alert("Failed to submit booking. Please try again.");
+      const bookingData = {
+        ...formData,
+        createdAt: serverTimestamp()
+      };
+
+      await addDoc(collection(firestore, "bookings"), bookingData);
+      
+      setSuccess(true);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        date: "",
+        message: "",
+        service: serviceName,
+        status: "pending",
+        createdAt: null
+      });
+    } catch (err) {
+      console.error("Error submitting booking:", err);
+      setError("Failed to submit booking. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (formErrors[name]) {
+      setFormErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  if (loading) return <LoadingSpinner />;
+
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-gray-50 rounded-md shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Book {serviceName}</h2>
-      <div className="mb-4">
-        <label htmlFor="name" className="block font-medium">
-          Name
-        </label>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && <div className="text-red-500">{error}</div>}
+      {success && (
+        <div className="text-green-500 mb-4">
+          Booking submitted successfully! We'll contact you soon.
+        </div>
+      )}
+      
+      <div>
         <input
           type="text"
-          id="name"
           name="name"
           value={formData.name}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 border rounded"
+          onChange={handleChange}
+          placeholder="Your Name"
+          className={`w-full p-2 border rounded ${formErrors.name ? 'border-red-500' : 'border-gray-300'}`}
         />
+        {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
       </div>
-      <div className="mb-4">
-        <label htmlFor="email" className="block font-medium">
-          Email
-        </label>
+
+      <div>
         <input
           type="email"
-          id="email"
           name="email"
           value={formData.email}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 border rounded"
+          onChange={handleChange}
+          placeholder="Email Address"
+          className={`w-full p-2 border rounded ${formErrors.email ? 'border-red-500' : 'border-gray-300'}`}
         />
+        {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
       </div>
-      <div className="mb-4">
-        <label htmlFor="phone" className="block font-medium">
-          Phone
-        </label>
+
+      <div>
         <input
           type="tel"
-          id="phone"
           name="phone"
           value={formData.phone}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 border rounded"
+          onChange={handleChange}
+          placeholder="Phone Number"
+          className={`w-full p-2 border rounded ${formErrors.phone ? 'border-red-500' : 'border-gray-300'}`}
         />
+        {formErrors.phone && <p className="text-red-500 text-sm">{formErrors.phone}</p>}
       </div>
-      <div className="mb-4">
-        <label htmlFor="date" className="block font-medium">
-          Preferred Date
-        </label>
+
+      <div>
         <input
           type="date"
-          id="date"
           name="date"
           value={formData.date}
-          onChange={handleInputChange}
-          required
-          className="w-full p-2 border rounded"
+          onChange={handleChange}
+          className={`w-full p-2 border rounded ${formErrors.date ? 'border-red-500' : 'border-gray-300'}`}
         />
+        {formErrors.date && <p className="text-red-500 text-sm">{formErrors.date}</p>}
       </div>
-      <div className="mb-4">
-        <label htmlFor="message" className="block font-medium">
-          Additional Details
-        </label>
+
+      <div>
         <textarea
-          id="message"
           name="message"
           value={formData.message}
-          onChange={handleInputChange}
-          className="w-full p-2 border rounded"
+          onChange={handleChange}
+          placeholder="Additional Message"
+          className="w-full p-2 border border-gray-300 rounded"
           rows={4}
-        ></textarea>
+        />
       </div>
+
       <button
         type="submit"
-        className={`px-6 py-2 text-white rounded ${
-          loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-        }`}
+        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
         disabled={loading}
       >
-        {loading ? "Submitting..." : "Submit Booking"}
+        {loading ? "Submitting..." : "Book Now"}
       </button>
     </form>
   );

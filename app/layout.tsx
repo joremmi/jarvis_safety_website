@@ -1,19 +1,46 @@
 import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import Chatbot from '@/components/Chatbot';
+import Providers from './providers';
 
 export const metadata = {
   title: "Jarvis Safety Consultancy",
-  description: "Health and Safety Services",
+  description: "Professional health and safety consultancy services including audits, training, and compliance solutions",
+  keywords: "safety consultancy, health and safety, workplace safety, safety training, safety audits",
+  authors: [{ name: "Jarvis Safety" }],
+  openGraph: {
+    title: "Jarvis Safety Consultancy",
+    description: "Professional health and safety consultancy services",
+    url: "https://jarvis-safety.com",
+    siteName: "Jarvis Safety",
+    images: [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body>
-        <Header />
-        <main className="">{children}</main>
-        <Footer />
+        <Providers>
+          <ErrorBoundary>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+              <Chatbot />
+            </div>
+          </ErrorBoundary>
+        </Providers>
       </body>
     </html>
   );

@@ -2,18 +2,19 @@
 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAYTwMG35r5AqUO_FMZr9pSBDMhiAqBeW8",
-    authDomain: "jarvis-52c38.firebaseapp.com",
-    projectId: "jarvis-52c38",
-    storageBucket: "jarvis-52c38.firebasestorage.app",
-    messagingSenderId: "401544119053",
-    appId: "1:401544119053:web:b7a22c2f749b6b61f42644",
-    measurementId: "G-4YVQGLQ6JL"
-  };
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+    databaseURL: "https://jarvis-52c38-default-rtdb.europe-west1.firebasedatabase.app"
+};
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-export { db };
+export const app = initializeApp(firebaseConfig);
+export const firestore = getFirestore(app);
+export const database = getDatabase(app);

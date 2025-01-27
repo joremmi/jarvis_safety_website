@@ -5,6 +5,7 @@ interface ServiceProps {
   description: string;
   link: string;
   category: string;
+  price: string;
 }
 
 const categoryImages: { [key: string]: string } = {
@@ -17,7 +18,7 @@ const categoryImages: { [key: string]: string } = {
   Medical: "/images/medical-bg.jpg",
 };
 
-const Service = ({ title, description, link, category }: ServiceProps) => {
+const Service = ({ title, description, link, category, price }: ServiceProps) => {
   const backgroundImage = categoryImages[category] || "/images/default-bg.jpg";
 
   return (
@@ -34,12 +35,15 @@ const Service = ({ title, description, link, category }: ServiceProps) => {
       <div className="w-1/2 p-6 z-10">
         <h2 className="text-3xl font-bold mb-4">{title}</h2>
         <p className="text-lg mb-6">{description}</p>
-        <a
-          href={link}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded shadow"
-        >
-          Learn More
-        </a>
+        <div className="flex justify-between items-center">
+          <span className="text-primary font-bold">{price}</span>
+          <a
+            href={link}
+            className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition-colors"
+          >
+            Book Now
+          </a>
+        </div>
       </div>
     </section>
   );
