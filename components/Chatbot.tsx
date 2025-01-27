@@ -3,12 +3,27 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import { v4 as uuidv4 } from 'uuid';
 import { fetchServices } from '@/lib/services';
 
-type CategoryType = typeof CATEGORIES[keyof typeof CATEGORIES];
+type CategoryType = 
+  | 'greeting'
+  | 'services'
+  | 'pricing'
+  | 'consultation'
+  | 'training'
+  | 'location'
+  | 'businessHours'
+  | 'emergency'
+  | 'trainingCapacity'
+  | 'virtualServices'
+  | 'rescheduling'
+  | 'cancellation'
+  | 'certification'
+  | 'customization'
+  | 'default';
 
 interface Message {
   text: string;
@@ -17,41 +32,7 @@ interface Message {
 }
 
 // Knowledge Base Categories
-const CATEGORIES = {
-  GREETING: 'greeting',
-  SERVICES: 'services',
-  PRICING: 'pricing',
-  CONSULTATION: 'consultation',
-  TRAINING: 'training',
-  LOCATION: 'location',
-  BUSINESS_HOURS: 'businessHours',
-  EMERGENCY: 'emergency',
-  TRAINING_CAPACITY: 'trainingCapacity',
-  VIRTUAL_SERVICES: 'virtualServices',
-  RESCHEDULING: 'rescheduling',
-  CANCELLATION: 'cancellation',
-  CERTIFICATION: 'certification',
-  CUSTOMIZATION: 'customization',
-  DEFAULT: 'default'
-} as const;
 
-// Pattern matching for user input
-const patterns = {
-  [CATEGORIES.GREETING]: /^(hi|hello|hey|greetings)/i,
-  [CATEGORIES.SERVICES]: /(service|offer|provide|available)/i,
-  [CATEGORIES.PRICING]: /(price|cost|fee|charge|rate)/i,
-  [CATEGORIES.CONSULTATION]: /(consult|book|appointment|schedule|meet)/i,
-  [CATEGORIES.TRAINING]: /(train|learn|course|class|workshop)/i,
-  [CATEGORIES.LOCATION]: /(where|location|address|office|based)/i,
-  [CATEGORIES.BUSINESS_HOURS]: /(hour|time|open|schedule|when)/i,
-  [CATEGORIES.EMERGENCY]: /(emergency|urgent|immediate|help)/i,
-  [CATEGORIES.TRAINING_CAPACITY]: /(capacity|group size|participants|people)/i,
-  [CATEGORIES.VIRTUAL_SERVICES]: /(virtual|online|remote|digital)/i,
-  [CATEGORIES.RESCHEDULING]: /(reschedule|change.*date|change.*time)/i,
-  [CATEGORIES.CANCELLATION]: /(cancel|terminate|end)/i,
-  [CATEGORIES.CERTIFICATION]: /(certif|accredit|qualification)/i,
-  [CATEGORIES.CUSTOMIZATION]: /(custom|tailor|specific|adjust)/i
-};
 
 // Define response patterns
 const botResponses: Record<CategoryType, string[]> = {

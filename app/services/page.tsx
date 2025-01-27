@@ -2,8 +2,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
-import ServiceSection from "../../components/Service";
+import React, { useState, useMemo } from "react";
 import { fetchServices, Service } from "@/lib/services";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Link from 'next/link';

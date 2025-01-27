@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { collection, query, getDocs, addDoc, updateDoc, deleteDoc, doc, where } from 'firebase/firestore';
+import { collection, query, getDocs, deleteDoc, doc, where } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -19,7 +19,6 @@ const DataManagement = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [filterType, setFilterType] = useState('all');
 
   // CRUD Operations
@@ -46,30 +45,7 @@ const DataManagement = () => {
     }
   };
 
-  const addReport = async (newReport: Omit<Report, 'id'>) => {
-    try {
-      const docRef = await addDoc(collection(firestore, 'reports'), newReport);
-      setReports(prev => [...prev, { ...newReport, id: docRef.id }]);
-    } catch (err) {
-      setError('Failed to add report');
-      console.error(err);
-    }
-  };
 
-  const updateReport = async (id: string, updates: Partial<Report>) => {
-    try {
-      const reportRef = doc(firestore, 'reports', id);
-      await updateDoc(reportRef, updates);
-      setReports(prev => 
-        prev.map(report => 
-          report.id === id ? { ...report, ...updates } : report
-        )
-      );
-    } catch (err) {
-      setError('Failed to update report');
-      console.error(err);
-    }
-  };
 
   const deleteReport = async (id: string) => {
     try {
@@ -119,12 +95,6 @@ const DataManagement = () => {
             <p className="text-gray-600 mb-4">Type: {report.type}</p>
             <p className="text-gray-600 mb-4">Date: {report.date}</p>
             <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setSelectedReport(report)}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                View
-              </button>
               <button
                 onClick={() => deleteReport(report.id)}
                 className="bg-red-500 text-white px-4 py-2 rounded"

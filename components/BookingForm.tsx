@@ -13,7 +13,7 @@ interface FormData {
   message: string;
   service?: string;
   status: string;
-  createdAt: any;
+  createdAt: null | import("firebase/firestore").Timestamp;
 }
 
 interface FormErrors {
@@ -99,7 +99,7 @@ const BookingForm = ({ serviceName = "" }) => {
       {error && <div className="text-red-500">{error}</div>}
       {success && (
         <div className="text-green-500 mb-4">
-          Booking submitted successfully! We'll contact you soon.
+          Booking submitted successfully! We&apos;ll contact you soon.
         </div>
       )}
       

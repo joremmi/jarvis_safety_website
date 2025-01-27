@@ -30,8 +30,8 @@ export default function VirtualConsultation() {
         startTime: serverTimestamp(),
       });
 
-      // Initialize ZEGO for this specific room
       const { ZegoUIKitPrebuilt } = await import('@zegocloud/zego-uikit-prebuilt');
+      setIsZegoLoaded(true);
       const appID = parseInt(process.env.NEXT_PUBLIC_ZEGO_APP_ID || '0');
       const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET || '';
 
@@ -77,14 +77,6 @@ export default function VirtualConsultation() {
   }
 
   if (!isZegoLoaded) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2">Loading video consultation...</span>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto mt-12">
@@ -167,3 +159,4 @@ export default function VirtualConsultation() {
     </div>
   );
 } 
+}
