@@ -4,7 +4,6 @@
 
 import React, { useState, useMemo } from "react";
 import { fetchServices, Service } from "@/lib/services";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import ServicesSkeleton from '@/components/ServicesSkeleton';

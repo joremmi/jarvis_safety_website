@@ -1,42 +1,33 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import type { Booking } from '@/types/booking';
 
-interface Booking {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  service: string;
-  date: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
-  message?: string;
-  createdAt: any;
-}
+export default function AdminBookingsPage() {
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
 
-export default function BookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const q = query(
-      collection(firestore, 'bookings'),
-      orderBy('createdAt', 'desc')
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const bookingsData = snapshot.docs.map(doc => ({
+  const { data: bookings = [], isLoading, error } = useQuery({
+    queryKey: ['bookings', selectedStatus],
+    queryFn: async () => {
+      const bookingsRef = collection(firestore, 'bookings');
+      const q = selectedStatus === 'all' 
+        ? query(bookingsRef, orderBy('date', 'desc'))
+        : query(bookingsRef, where('status', '==', selectedStatus), orderBy('date', 'desc'));
+      
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Booking[];
-      setBookings(bookingsData);
-      setLoading(false);
-    });
+    }
+  });
 
-    return () => unsubscribe();
-  }, []);
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <div>Error loading bookings</div>;
 
   return (
     <div>

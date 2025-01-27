@@ -40,9 +40,11 @@ function BlogPostCard({ post }: { post: BlogPost }) {
     <article className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105">
       {post.imageUrl && (
         <div className="relative h-48">
-          <img
+          <Image
             src={post.imageUrl}
             alt={post.title}
+            width={400}
+            height={300}
             className="w-full h-full object-cover"
           />
         </div>

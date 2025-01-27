@@ -1,36 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { collection, query, onSnapshot, orderBy } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
-import { Consultation } from '@/types/consultation';
+import { useQuery } from '@tanstack/react-query';
+import { consultationService } from '@/lib/services/consultation';
+import LoadingSpinner from './LoadingSpinner';
 
-interface ConsultationListProps {
-  onSelectConsultation: (consultation: Consultation) => void;
-}
+export default function ConsultationList() {
+  const { data: consultations = [], isLoading, error } = useQuery({
+    queryKey: ['consultations'],
+    queryFn: consultationService.getPendingConsultations
+  });
 
-export default function ConsultationList({ onSelectConsultation }: ConsultationListProps) {
-  const [consultations, setConsultations] = useState<Consultation[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const q = query(
-      collection(firestore, 'consultations'),
-      orderBy('startTime', 'desc')
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const consultationData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Consultation[];
-      
-      setConsultations(consultationData);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <div>Error loading consultations</div>;
 
   return (
     <div className="bg-white rounded-lg shadow">
@@ -41,7 +22,6 @@ export default function ConsultationList({ onSelectConsultation }: ConsultationL
         {consultations.map((consultation) => (
           <div
             key={consultation.id}
-            onClick={() => onSelectConsultation(consultation)}
             className="p-4 hover:bg-gray-50 cursor-pointer"
           >
             <h3 className="font-medium">{consultation.clientName}</h3>
