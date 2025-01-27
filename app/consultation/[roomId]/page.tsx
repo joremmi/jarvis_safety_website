@@ -1,8 +1,15 @@
 'use client';
 
 import ConsultationRoom from '@/components/ConsultationRoom';
+import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 
-export default function ConsultationPage({ params }: { params: { roomId: string } }) {
+interface PageProps {
+  params: {
+    roomId: string;
+  };
+}
+
+export default function ConsultationPage({ params }: PageProps) {
   return <ConsultationRoom roomId={params.roomId} />;
 }
 
