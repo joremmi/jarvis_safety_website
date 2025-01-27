@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const HeroSection = () => {
@@ -21,12 +22,11 @@ const HeroSection = () => {
             we help businesses create safer work environments and protect their most valuable asset - their people.
           </p>
             <div className="text-center">
-            <a
-              href="/services"
-              className="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 inline-block"
-            >
+            <Link href="/services" passHref>
+              <a className="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 inline-block">
               Discover Our Services
-            </a>
+              </a>
+            </Link>
             </div>
         </div>
       </div>

@@ -99,7 +99,7 @@ const TeamSection = () => {
               {teamMembers.map((member, index) => (
                 <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="aspect-w-1 aspect-h-1 flex justify-center items-center p-4">
-                    <img
+                    <Image
                       src={member.image}
                       alt={member.name}
                       className="w-40 h-40 object-cover rounded-full"

@@ -6,7 +6,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import ServiceSection from "../../components/Service";
 import { fetchServices, Service } from "@/lib/services";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import Sidebar from "@/components/Sidebar";
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 

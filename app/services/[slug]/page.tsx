@@ -3,7 +3,6 @@ import { firestore } from '@/lib/firebase';
 import { Service } from '@/lib/services';
 import BookingForm from '@/components/BookingForm';
 import Link from 'next/link';
-import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 
 async function getServiceData(slug: string): Promise<Service | null> {
   const serviceLink = `/services/${slug}`;

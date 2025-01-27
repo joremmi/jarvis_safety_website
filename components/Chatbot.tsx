@@ -6,7 +6,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import { v4 as uuidv4 } from 'uuid';
-import type { Service } from '@/lib/services';
 import { fetchServices } from '@/lib/services';
 
 type CategoryType = typeof CATEGORIES[keyof typeof CATEGORIES];
