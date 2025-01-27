@@ -3,13 +3,9 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import Image from 'next/image';
 import BlogSkeleton from '@/components/BlogSkeleton';
 import { fetchBlogPosts } from '@/lib/blog';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
-import { use } from 'react';
-import Image from 'next/image';
-import { CalendarIcon, UserIcon } from '@heroicons/react/24/outline';
 
 interface BlogPost {
   id: string;
@@ -56,10 +52,12 @@ function BlogPostCard({ post }: { post: BlogPost }) {
         <p className="text-gray-600 mb-4">{post.excerpt}</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img
+            <Image
               src={post.author.avatar}
               alt={post.author.name}
-              className="h-8 w-8 rounded-full"
+              width={32}
+              height={32}
+              className="rounded-full"
             />
             <span className="text-gray-600">{post.author.name}</span>
           </div>
