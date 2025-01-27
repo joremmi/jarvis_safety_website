@@ -1,36 +1,48 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Service } from '@/types/service';
+import { useState } from 'react';
+import type { Service, ServiceCategory } from '@/types/service';
 
-interface ServiceEditFormProps {
+interface Props {
   service?: Service;
-  onSubmit: (service: Partial<Service>) => Promise<void>;
-  onCancel: () => void;
+  onSave: (service: Service) => void;
+  onClose: () => void;
 }
 
-export default function ServiceEditForm({ service, onSubmit, onCancel }: ServiceEditFormProps) {
-  const [formData, setFormData] = useState({
-    name: service?.name || '',
-    description: service?.description || '',
-    category: service?.category || 'Training Services',
-    price: service?.price || '',
-    industry: service?.industry || [],
-    features: service?.features || [''],
-    link: service?.link || ''
+const CATEGORIES: ServiceCategory[] = [
+  'Training Services',
+  'Audit Services',
+  'Policy Services',
+  'Compliance Services',
+  'Hazardous Material Services',
+  'Standardization Services',
+  'Medical Services'
+];
+
+export default function ServiceEditForm({ service, onSave, onClose }: Props) {
+  const [formData, setFormData] = useState<Partial<Service>>(service || {
+    name: '',
+    description: '',
+    category: 'Training Services',
+    price: '',
+    features: [],
+    industry: []
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError(null);
 
     try {
-      await onSubmit(formData);
-    } catch (err) {
-      setError('Failed to save service. Please try again.');
+      // Validation logic here
+      onSave(formData as Service);
+      onClose();
+    } catch (error) {
+      setError('Failed to save service');
+      console.error('Error saving service:', error);
     } finally {
       setLoading(false);
     }
@@ -64,16 +76,17 @@ export default function ServiceEditForm({ service, onSubmit, onCancel }: Service
         <label className="block text-sm font-medium text-gray-700">Category</label>
         <select
           value={formData.category}
-          onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+          onChange={(e) => setFormData(prev => ({ 
+            ...prev, 
+            category: e.target.value as ServiceCategory 
+          }))}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         >
-          <option value="Training Services">Training Services</option>
-          <option value="Audit Services">Audit Services</option>
-          <option value="Policy Services">Policy Services</option>
-          <option value="Compliance Services">Compliance Services</option>
-          <option value="Hazardous Material Services">Hazardous Material Services</option>
-          <option value="Standardization Services">Standardization Services</option>
-          <option value="Medical Services">Medical Services</option>
+          {CATEGORIES.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -90,13 +103,13 @@ export default function ServiceEditForm({ service, onSubmit, onCancel }: Service
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Features</label>
-        {formData.features.map((feature, index) => (
+        {formData.features?.map((feature: string, index: number) => (
           <div key={index} className="flex mt-2">
             <input
               type="text"
               value={feature}
               onChange={(e) => {
-                const newFeatures = [...formData.features];
+                const newFeatures = [...(formData.features || [])];
                 newFeatures[index] = e.target.value;
                 setFormData(prev => ({ ...prev, features: newFeatures }));
               }}
@@ -105,7 +118,7 @@ export default function ServiceEditForm({ service, onSubmit, onCancel }: Service
             <button
               type="button"
               onClick={() => {
-                const newFeatures = formData.features.filter((_, i) => i !== index);
+                const newFeatures = formData.features?.filter((_: string, i: number) => i !== index);
                 setFormData(prev => ({ ...prev, features: newFeatures }));
               }}
               className="ml-2 text-red-600 hover:text-red-800"
@@ -116,7 +129,10 @@ export default function ServiceEditForm({ service, onSubmit, onCancel }: Service
         ))}
         <button
           type="button"
-          onClick={() => setFormData(prev => ({ ...prev, features: [...prev.features, ''] }))}
+          onClick={() => setFormData(prev => ({ 
+            ...prev, 
+            features: [...(prev.features || []), ''] 
+          }))}
           className="mt-2 text-blue-600 hover:text-blue-800"
         >
           Add Feature
@@ -130,7 +146,7 @@ export default function ServiceEditForm({ service, onSubmit, onCancel }: Service
       <div className="flex justify-end space-x-2">
         <button
           type="button"
-          onClick={onCancel}
+          onClick={onClose}
           className="px-4 py-2 text-gray-700 hover:text-gray-900"
           disabled={loading}
         >

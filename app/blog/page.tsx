@@ -6,21 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BlogSkeleton from '@/components/BlogSkeleton';
 import { fetchBlogPosts } from '@/lib/blog';
-
-interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  author: {
-    name: string;
-    avatar: string;
-  };
-  category: string;
-  imageUrl: string;
-  date: string;
-  readTime: string;
-}
+import type { BlogPost } from '@/types/blog';
 
 const categories = [
   "All",
@@ -39,9 +25,10 @@ function BlogPostCard({ post }: { post: BlogPost }) {
           <Image
             src={post.imageUrl}
             alt={post.title}
-            width={400}
-            height={300}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover"
+            priority
           />
         </div>
       )}
@@ -52,13 +39,15 @@ function BlogPostCard({ post }: { post: BlogPost }) {
         <p className="text-gray-600 mb-4">{post.excerpt}</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Image
-              src={post.author.avatar}
-              alt={post.author.name}
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
+            {post.author.avatar && (
+              <Image
+                src={post.author.avatar}
+                alt={`${post.author.name}'s avatar`}
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            )}
             <span className="text-gray-600">{post.author.name}</span>
           </div>
           <span className="text-gray-500">{post.readTime}</span>

@@ -1,29 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import ServiceEditForm from '@/components/ServiceEditForm';
+import type { Service } from '@/types/service';
 
-interface Service {
-  id: string;
-  title: string;
-  description: string;
-  features: string[];
-  price?: string;
-  active: boolean;
-}
-
-export default function ServicesPage() {
+export default function AdminServicesPage() {
+  const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
-  const [editingService, setEditingService] = useState<Service | null>(null);
+  const [selectedService, setSelectedService] = useState<Service | undefined>(undefined);
 
   const { data: services = [], isLoading, error } = useQuery({
-    queryKey: ['services'],
+    queryKey: ['admin-services'],
     queryFn: async () => {
-      const servicesRef = collection(firestore, 'services');
-      const snapshot = await getDocs(servicesRef);
+      const snapshot = await getDocs(collection(firestore, 'services'));
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -31,15 +24,21 @@ export default function ServicesPage() {
     }
   });
 
-  const handleSave = async (service: Partial<Service>) => {
-    if (editingService?.id) {
-      await updateDoc(doc(firestore, 'services', editingService.id), service);
-    } else {
-      await addDoc(collection(firestore, 'services'), service);
+  const saveMutation = useMutation({
+    mutationFn: async (service: Service) => {
+      const { id, ...serviceData } = service;
+      if (id) {
+        await updateDoc(doc(firestore, 'services', id), serviceData);
+      } else {
+        await addDoc(collection(firestore, 'services'), serviceData);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-services'] });
+      setIsEditing(false);
+      setSelectedService(undefined);
     }
-    setIsEditing(false);
-    setEditingService(null);
-  };
+  });
 
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this service?')) {
@@ -65,7 +64,7 @@ export default function ServicesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map(service => (
           <div key={service.id} className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
+            <h3 className="text-xl font-semibold mb-2">{service.name}</h3>
             <p className="text-gray-600 mb-4">{service.description}</p>
             <ul className="list-disc ml-5 mb-4">
               {service.features.map((feature, index) => (
@@ -78,7 +77,7 @@ export default function ServicesPage() {
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => {
-                  setEditingService(service);
+                  setSelectedService(service);
                   setIsEditing(true);
                 }}
                 className="text-blue-600 hover:text-blue-800"
@@ -100,7 +99,11 @@ export default function ServicesPage() {
       {isEditing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            {/* Add form fields here */}
+            <ServiceEditForm
+              service={selectedService}
+              onSave={saveMutation.mutate}
+              onClose={() => setIsEditing(false)}
+            />
           </div>
         </div>
       )}

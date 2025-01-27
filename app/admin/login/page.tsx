@@ -13,24 +13,35 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { admin } = useAdminAuth();
 
-  // Redirect if already logged in
-  if (admin) {
-    router.push('/admin/dashboard');
-    return null;
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/admin/dashboard');
+      router.replace('/admin/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       setError('Invalid email or password');
     }
   };
+
+  // If already logged in, show a message instead of redirecting
+  if (admin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full p-8 bg-white rounded-lg shadow text-center">
+          <p className="text-lg text-gray-600 mb-4">You are already logged in as an admin.</p>
+          <button
+            onClick={() => router.push('/admin/dashboard')}
+            className="text-indigo-600 hover:text-indigo-800"
+          >
+            Go to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
