@@ -1,7 +1,6 @@
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import { use } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { CalendarIcon, UserIcon } from '@heroicons/react/24/outline';
 
@@ -31,53 +30,74 @@ export default function BlogPage() {
   const posts = use(getBlogPosts());
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-12 h-full">
-      <h1 className="text-4xl font-bold text-center mb-12">Safety Blog</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post) => (
-          <Link 
-            href={`/blog/${post.slug}`} 
-            key={post.id}
-            className="group"
-          >
-            <article className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 group-hover:-translate-y-1">
-              <div className="relative h-48 w-full">
-                <Image
-                  src={post.imageUrl}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2 group-hover:text-blue-600 transition-colors">
-                  {post.title}
-                </h2>
-                
-                <p className="text-gray-600 mb-4 line-clamp-2">
-                  {post.excerpt}
-                </p>
-                
-                <div className="flex items-center text-sm text-gray-500 space-x-4">
-                  <div className="flex items-center">
-                    <UserIcon className="h-4 w-4 mr-1" />
-                    {post.author}
-                  </div>
-                  <div className="flex items-center">
-                    <CalendarIcon className="h-4 w-4 mr-1" />
-                    {new Date(post.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </div>
+    <div className="container mx-auto px-4 py-8 mt-12">
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Sidebar */}
+        <aside className="md:w-1/4">
+          <div className="sticky top-24 bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">All Posts</h2>
+            <nav>
+              <ul className="space-y-3">
+                {posts.map((post) => (
+                  <li key={post.id}>
+                    <a 
+                      href={`#${post.slug}`}
+                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      {post.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="md:w-3/4">
+          <div className="space-y-12">
+            {posts.map((post) => (
+              <article 
+                key={post.id} 
+                id={post.slug}
+                className="bg-white rounded-lg shadow-lg overflow-hidden"
+              >
+                <div className="relative h-[400px] w-full">
+                  <Image
+                    src={post.imageUrl}
+                    alt={post.title}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-              </div>
-            </article>
-          </Link>
-        ))}
+                
+                <div className="p-8">
+                  <h2 className="text-3xl font-bold mb-4">{post.title}</h2>
+                  
+                  <div className="flex items-center text-sm text-gray-500 space-x-4 mb-6">
+                    <div className="flex items-center">
+                      <UserIcon className="h-4 w-4 mr-1" />
+                      {post.author}
+                    </div>
+                    <div className="flex items-center">
+                      <CalendarIcon className="h-4 w-4 mr-1" />
+                      {new Date(post.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </div>
+                  </div>
+                  
+                  <div 
+                    className="prose max-w-none"
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                  />
+                </div>
+              </article>
+            ))}
+          </div>
+        </main>
       </div>
 
       {posts.length === 0 && (

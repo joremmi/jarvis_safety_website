@@ -120,6 +120,45 @@ const botResponses: Record<CategoryType, string[]> = {
   ]
 };
 
+// Add specific service responses
+const serviceResponses: Record<string, string> = {
+  medical: `Our Medical Services include:
+  - Occupational Health Assessments
+  - First Aid Training and Certification
+  - Emergency Medical Response Planning
+  - Workplace Health Monitoring
+  - Medical Emergency Preparedness
+  
+Would you like to schedule a consultation about any of these medical services?`,
+
+  training: `Our Training Services include:
+  - Safety Leadership Training
+  - Emergency Response Training
+  - Risk Assessment Training
+  - OSHA Compliance Training
+  - Custom Safety Training Programs
+  
+Would you like to learn more about a specific training program?`,
+
+  audit: `Our Safety Audit Services include:
+  - Comprehensive Workplace Safety Audits
+  - Compliance Gap Analysis
+  - Risk Assessment Reviews
+  - Safety Management System Audits
+  - Follow-up Implementation Support
+  
+Would you like to schedule a safety audit?`,
+
+  hazmat: `Our Hazardous Material Services include:
+  - Hazmat Handling Procedures
+  - Chemical Safety Management
+  - Storage and Transportation Guidelines
+  - Emergency Response Planning
+  - Staff Training for Hazmat Handling
+  
+Would you like to discuss your hazardous material safety needs?`,
+};
+
 // Enhanced response selection with context awareness
 async function getBotResponse(userInput: string): Promise<string> {
   const input = userInput.toLowerCase();
@@ -134,28 +173,29 @@ async function getBotResponse(userInput: string): Promise<string> {
     `;
   }
 
-  // Check for regular booking/consultation
-  if (input.includes('guide') && input.includes('booking')) {
-    return `
-      For in-person consultations, you can book here: 
-      <a href="/contact" class="text-blue-600 underline">Book In-Person Consultation</a>
-    `;
+  // Check for specific service inquiries
+  if (input.includes('medical') || input.includes('health')) {
+    return serviceResponses.medical;
   }
 
-  if (input.includes('book') || 
-      (input.includes('consultation') && !input.includes('virtual'))) {
-    return `
-      Would you prefer a virtual consultation or an in-person meeting? 
-      - For virtual consultations, click here: <a href="/virtual-consultation" class="text-blue-600 underline">Virtual Consultation</a>
-      - For in-person meetings, click here: <a href="/contact" class="text-blue-600 underline">Book In-Person Consultation</a>
-    `;
+  if (input.includes('training') || input.includes('learn') || input.includes('course')) {
+    return serviceResponses.training;
   }
 
-  // Check for pattern matches
-  for (const [category, pattern] of Object.entries(patterns)) {
-    if (pattern.test(input)) {
-      const responses = botResponses[category as CategoryType];
-      return responses[Math.floor(Math.random() * responses.length)];
+  if (input.includes('audit') || input.includes('assessment') || input.includes('review')) {
+    return serviceResponses.audit;
+  }
+
+  if (input.includes('hazmat') || input.includes('hazardous') || input.includes('chemical')) {
+    return serviceResponses.hazmat;
+  }
+
+  // Check for service details request
+  if (input.includes('tell me more') || input.includes('know more') || input.includes('details')) {
+    for (const [service, response] of Object.entries(serviceResponses)) {
+      if (input.includes(service)) {
+        return response;
+      }
     }
   }
 

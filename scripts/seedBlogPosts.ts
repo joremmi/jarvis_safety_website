@@ -70,7 +70,7 @@ async function seedBlogPosts() {
     const db = admin.firestore();
     
     for (const post of samplePosts) {
-      await db.collection('blog-posts').add(post);
+      await db.collection('blog-posts').doc(post.slug).set(post);
       console.log(`Added blog post: ${post.title}`);
     }
     
