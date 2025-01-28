@@ -3,10 +3,8 @@
 import WhyChooseUsSection from "@/components/WhyChooseUs";
 import ContactSection from "@/components/Contact";
 import TestimonialSection from "@/components/Testimonial";
-import BlogSection from "@/components/Blog";
 import Link from 'next/link';
 import HeroCarousel from '@/components/HeroCarousel';
-import FeaturedBlogPosts from '@/components/FeaturedBlogPosts';
 
 export default function Home() {
   return (
@@ -47,11 +45,6 @@ export default function Home() {
         <WhyChooseUsSection />
       </section>
 
-      {/* Blog Section */}
-      <section className="py-20 bg-gray-100">
-        <BlogSection />
-      </section>
-
       {/* Testimonial Section */}
       <section className="py-20 bg-white">
         <TestimonialSection />
@@ -62,7 +55,6 @@ export default function Home() {
         <ContactSection />
       </section>
 
-      <FeaturedBlogPosts />
 
     </main>
   );

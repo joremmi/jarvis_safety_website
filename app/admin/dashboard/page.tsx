@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 interface DashboardStats {
   bookings: number;
   consultations: number;
-  'blog-posts': number;
   services: number;
   'chat-messages': number;
   pendingConsultations: number;
@@ -21,7 +20,6 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats>({
     bookings: 0,
     consultations: 0,
-    'blog-posts': 0,
     services: 0,
     'chat-messages': 0,
     pendingConsultations: 0
@@ -45,8 +43,6 @@ export default function DashboardPage() {
         
         const collections = [
           'bookings',
-          'consultations',
-          'blog-posts',
           'services',
           'chat-messages'
         ];
@@ -118,15 +114,6 @@ export default function DashboardPage() {
           <p className="text-3xl font-bold">{stats.bookings}</p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm">Active Consultations</h3>
-          <p className="text-3xl font-bold">{stats.consultations}</p>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm">Blog Posts</h3>
-          <p className="text-3xl font-bold">{stats['blog-posts']}</p>
-        </div>
 
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-gray-500 text-sm">Services</h3>
