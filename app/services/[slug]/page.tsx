@@ -1,34 +1,34 @@
 // app/services/[slug]/page.tsx
 
-import { notFound } from 'next/navigation'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
-import { Service } from '@/types/service' // Adjusted import path based on your structure
-import BookingForm from '@/components/BookingForm'
-import Link from 'next/link'
-import { PageProps } from '@/types/next'; // Import the updated PageProps type
+import { notFound } from 'next/navigation';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase';
+import { Service } from '@/types/service';
+import BookingForm from '@/components/BookingForm';
+import Link from 'next/link';
+import { PageProps } from '@/types/next';
 
 // Fetch service data from Firestore
 async function getServiceData(slug: string): Promise<Service | null> {
-  const serviceLink = `/services/${slug}`
-  const servicesRef = collection(firestore, 'services')
-  const q = query(servicesRef, where('link', '==', serviceLink))
-  const querySnapshot = await getDocs(q)
+  const serviceLink = `/services/${slug}`;
+  const servicesRef = collection(firestore, 'services');
+  const q = query(servicesRef, where('link', '==', serviceLink));
+  const querySnapshot = await getDocs(q);
 
   if (querySnapshot.empty) {
-    return null
+    return null;
   }
 
   return {
     id: querySnapshot.docs[0].id,
     ...querySnapshot.docs[0].data(),
-  } as Service
+  } as Service;
 }
 
 export async function generateStaticParams() {
   try {
-    const servicesRef = collection(firestore, 'services')
-    const querySnapshot = await getDocs(servicesRef)
+    const servicesRef = collection(firestore, 'services');
+    const querySnapshot = await getDocs(servicesRef);
 
     // Filter out services that have static pages
     const staticPaths = [
@@ -45,18 +45,18 @@ export async function generateStaticParams() {
       'ssows',
       'standardizations',
       'templates',
-    ]
+    ];
 
     return querySnapshot.docs
       .map((doc) => {
-        const link = doc.data().link
-        const slug = link.replace('/services/', '')
-        return { slug }
+        const link = doc.data().link;
+        const slug = link.replace('/services/', '');
+        return { slug };
       })
-      .filter(({ slug }) => !staticPaths.includes(slug))
+      .filter(({ slug }) => !staticPaths.includes(slug));
   } catch (error) {
-    console.error('Error generating static params:', error)
-    return []
+    console.error('Error generating static params:', error);
+    return [];
   }
 }
 
