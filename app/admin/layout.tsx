@@ -44,9 +44,6 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           <a href="/admin/dashboard" className="block px-4 py-2 hover:bg-gray-50">
             Dashboard Overview
           </a>
-          <a href="/admin/consultations" className="block px-4 py-2 hover:bg-gray-50">
-            Consultations
-          </a>
           <a href="/admin/bookings" className="block px-4 py-2 hover:bg-gray-50">
             Bookings
           </a>
