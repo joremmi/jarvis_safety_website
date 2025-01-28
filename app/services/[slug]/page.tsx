@@ -3,31 +3,9 @@ import { firestore } from '@/lib/firebase';
 import { Service } from '@/lib/services';
 import BookingForm from '@/components/BookingForm';
 import Link from 'next/link';
+import { PageProps } from '@/types/next';
 
-interface ServicePageProps {
-  params: {
-    slug: string;
-  };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-async function getServiceData(slug: string): Promise<Service | null> {
-  const serviceLink = `/services/${slug}`;
-  const servicesRef = collection(firestore, 'services');
-  const q = query(servicesRef, where('link', '==', serviceLink));
-  const querySnapshot = await getDocs(q);
-  
-  if (querySnapshot.empty) {
-    return null;
-  }
-
-  return {
-    id: querySnapshot.docs[0].id,
-    ...querySnapshot.docs[0].data()
-  } as Service;
-}
-
-export default async function ServicePage({ params }: ServicePageProps) {
+export default async function ServicePage({ params }: PageProps) {
   const service = await getServiceData(params.slug);
 
   if (!service) {
@@ -76,3 +54,20 @@ export default async function ServicePage({ params }: ServicePageProps) {
     </div>
   );
 }
+
+async function getServiceData(slug: string): Promise<Service | null> {
+  const serviceLink = `/services/${slug}`;
+  const servicesRef = collection(firestore, 'services');
+  const q = query(servicesRef, where('link', '==', serviceLink));
+  const querySnapshot = await getDocs(q);
+  
+  if (querySnapshot.empty) {
+    return null;
+  }
+
+  return {
+    id: querySnapshot.docs[0].id,
+    ...querySnapshot.docs[0].data()
+  } as Service;
+}
+
