@@ -6,12 +6,8 @@ import { Service } from '@/lib/services';
 import BookingForm from '@/components/BookingForm';
 import Link from 'next/link';
 
-// Ensure this is a static page with params
-interface ServicePageProps {
-  service: Service | null;
-}
-
-export default function ServicePage({ service }: ServicePageProps) {
+// Service page component
+export default function ServicePage({ service }: { service: Service | null }) {
   if (!service) {
     return (
       <div className="min-h-screen p-8">
@@ -56,21 +52,8 @@ export default function ServicePage({ service }: ServicePageProps) {
   );
 }
 
-export async function getStaticPaths() {
-  const servicesRef = collection(firestore, 'services');
-  const querySnapshot = await getDocs(servicesRef);
-
-  const paths = querySnapshot.docs.map((doc) => ({
-    params: { slug: doc.data().link.replace('/services/', '') },
-  }));
-
-  return {
-    paths,
-    fallback: 'blocking', // or 'false' if you want to show a 404 for missing paths
-  };
-}
-
-export async function getStaticProps({ params }: { params: { slug: string } }) {
+// `generateStaticProps` is the recommended way to fetch data in Next.js 13+ `app` directory
+export async function generateStaticProps({ params }: { params: { slug: string } }) {
   const service = await getServiceData(params.slug);
 
   return {
@@ -80,7 +63,22 @@ export async function getStaticProps({ params }: { params: { slug: string } }) {
   };
 }
 
-// ✅ Fetch service data properly
+// `generateStaticPaths` for dynamic route handling
+export async function generateStaticPaths() {
+  const servicesRef = collection(firestore, 'services');
+  const querySnapshot = await getDocs(servicesRef);
+
+  const paths = querySnapshot.docs.map((doc) => ({
+    params: { slug: doc.data().link.replace('/services/', '') },
+  }));
+
+  return {
+    paths,
+    fallback: 'blocking', // Wait for new pages to be generated before serving them
+  };
+}
+
+// Fetch service data from Firestore
 async function getServiceData(slug: string): Promise<Service | null> {
   const serviceLink = `/services/${slug}`;
   const servicesRef = collection(firestore, 'services');
