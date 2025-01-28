@@ -6,11 +6,12 @@ import Link from 'next/link'
 
 interface ServicePageProps {
   params: {
-    slug: string
-  }
+    slug: string;
+  };
 }
+
 export default async function ServicePage({ params }: ServicePageProps) {
-  const service = await getServiceData(params.slug)
+  const service = await getServiceData(params.slug);
 
   if (!service) {
     return (
@@ -37,10 +38,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
         >
           ← Back to Services
         </Link>
-
+        
         <h1 className="text-3xl font-bold mb-4">{service.name}</h1>
         <p className="text-gray-600 mb-6">{service.description}</p>
-
+        
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">Service Details</h2>
           <div className="grid grid-cols-2 gap-4">
@@ -58,13 +59,13 @@ export default async function ServicePage({ params }: ServicePageProps) {
             </div>
           </div>
         </div>
-
         <BookingForm serviceName={service.name} />
       </div>
     </div>
   )
 }
 
+// ✅ Fetch service data properly
 async function getServiceData(slug: string): Promise<Service | null> {
   const serviceLink = `/services/${slug}`
   const servicesRef = collection(firestore, 'services')
@@ -80,3 +81,4 @@ async function getServiceData(slug: string): Promise<Service | null> {
     ...querySnapshot.docs[0].data(),
   } as Service
 }
+
