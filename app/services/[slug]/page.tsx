@@ -5,12 +5,13 @@ import BookingForm from '@/components/BookingForm';
 import Link from 'next/link';
 
 interface ServicePageProps {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
 }
+
+// ✅ Ensure that params are correctly structured
 export default async function ServicePage({ params }: ServicePageProps) {
-  const service = await getServiceData(params.slug);
+  const { slug } = params; // Ensure params is properly destructured
+  const service = await getServiceData(slug);
 
   if (!service) {
     return (
@@ -31,10 +32,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
         <Link href="/services" className="text-blue-500 hover:underline mb-4 inline-block">
           ← Back to Services
         </Link>
-        
         <h1 className="text-3xl font-bold mb-4">{service.name}</h1>
         <p className="text-gray-600 mb-6">{service.description}</p>
-        
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">Service Details</h2>
           <div className="grid grid-cols-2 gap-4">
@@ -52,13 +51,13 @@ export default async function ServicePage({ params }: ServicePageProps) {
             </div>
           </div>
         </div>
-
         <BookingForm serviceName={service.name} />
       </div>
     </div>
   );
 }
 
+// ✅ Fetch service data properly
 async function getServiceData(slug: string): Promise<Service | null> {
   const serviceLink = `/services/${slug}`;
   const servicesRef = collection(firestore, 'services');
@@ -75,3 +74,12 @@ async function getServiceData(slug: string): Promise<Service | null> {
   } as Service;
 }
 
+// ✅ Add `generateStaticParams` for pre-rendering pages dynamically
+export async function generateStaticParams() {
+  const servicesRef = collection(firestore, 'services');
+  const querySnapshot = await getDocs(servicesRef);
+
+  return querySnapshot.docs.map((doc) => ({
+    slug: doc.data().link.replace('/services/', '') // Extract slug from link
+  }));
+}
