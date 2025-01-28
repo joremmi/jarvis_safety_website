@@ -1,3 +1,5 @@
+// types/service.ts
+
 export type ServiceCategory =
   | 'Training Services'
   | 'Audit Services'

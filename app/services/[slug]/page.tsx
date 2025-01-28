@@ -6,6 +6,7 @@ import { firestore } from '@/lib/firebase'
 import { Service } from '@/types/service' // Adjusted import path based on your structure
 import BookingForm from '@/components/BookingForm'
 import Link from 'next/link'
+import { PageProps } from '@/types/next'; // Import the updated PageProps type
 
 // Fetch service data from Firestore
 async function getServiceData(slug: string): Promise<Service | null> {
@@ -62,13 +63,11 @@ export async function generateStaticParams() {
 // Service page component
 export default async function ServicePage({
   params,
-}: {
-  params: { slug: string }
-}) {
-  const service = await getServiceData(params.slug)
+}: PageProps<{ slug: string }>) {
+  const service = await getServiceData(params.slug);
 
   if (!service) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -102,5 +101,5 @@ export default async function ServicePage({
         <BookingForm serviceName={service.name} />
       </div>
     </div>
-  )
+  );
 }
