@@ -1,59 +1,83 @@
 // app/services/[slug]/page.tsx
 
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
-import { Service } from '@/lib/services';
-import BookingForm from '@/components/BookingForm';
-import Link from 'next/link';
+import { notFound } from 'next/navigation'
+import { collection, query, where, getDocs } from 'firebase/firestore'
+import { firestore } from '@/lib/firebase'
+import { Service } from '@/types/service' // Adjusted import path based on your structure
+import BookingForm from '@/components/BookingForm'
+import Link from 'next/link'
 
 // Fetch service data from Firestore
 async function getServiceData(slug: string): Promise<Service | null> {
-  const serviceLink = `/services/${slug}`;
-  const servicesRef = collection(firestore, 'services');
-  const q = query(servicesRef, where('link', '==', serviceLink));
-  const querySnapshot = await getDocs(q);
+  const serviceLink = `/services/${slug}`
+  const servicesRef = collection(firestore, 'services')
+  const q = query(servicesRef, where('link', '==', serviceLink))
+  const querySnapshot = await getDocs(q)
 
   if (querySnapshot.empty) {
-    return null;
+    return null
   }
 
   return {
     id: querySnapshot.docs[0].id,
     ...querySnapshot.docs[0].data(),
-  } as Service;
+  } as Service
 }
 
-// Generate static params for all services
 export async function generateStaticParams() {
-  const servicesRef = collection(firestore, 'services');
-  const querySnapshot = await getDocs(servicesRef);
+  try {
+    const servicesRef = collection(firestore, 'services')
+    const querySnapshot = await getDocs(servicesRef)
 
-  return querySnapshot.docs.map((doc) => ({
-    slug: doc.data().link.replace('/services/', ''),
-  }));
+    // Filter out services that have static pages
+    const staticPaths = [
+      'audits',
+      'dgr',
+      'emergency-preparedness',
+      'hazmat',
+      'iso-compliance',
+      'medical-exams',
+      'nfpa',
+      'plant-exams',
+      'policy',
+      'qhse',
+      'ssows',
+      'standardizations',
+      'templates',
+    ]
+
+    return querySnapshot.docs
+      .map((doc) => {
+        const link = doc.data().link
+        const slug = link.replace('/services/', '')
+        return { slug }
+      })
+      .filter(({ slug }) => !staticPaths.includes(slug))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
 
 // Service page component
-export default async function ServicePage({ params }: { params: { slug: string } }) {
-  const service = await getServiceData(params.slug);
+export default async function ServicePage({
+  params,
+}: {
+  params: { slug: string }
+}) {
+  const service = await getServiceData(params.slug)
 
   if (!service) {
-    return (
-      <div className="min-h-screen p-8">
-        <div className="max-w-3xl mx-auto mt-12">
-          <Link href="/services" className="text-blue-500 hover:underline mb-4 inline-block">
-            ← Back to Services
-          </Link>
-          <h1 className="text-2xl font-bold text-red-500">Service not found</h1>
-        </div>
-      </div>
-    );
+    notFound()
   }
 
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-3xl mx-auto mt-12">
-        <Link href="/services" className="text-blue-500 hover:underline mb-4 inline-block">
+        <Link
+          href="/services"
+          className="text-blue-500 hover:underline mb-4 inline-block"
+        >
           ← Back to Services
         </Link>
         <h1 className="text-3xl font-bold mb-4">{service.name}</h1>
@@ -78,5 +102,5 @@ export default async function ServicePage({ params }: { params: { slug: string }
         <BookingForm serviceName={service.name} />
       </div>
     </div>
-  );
+  )
 }
