@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { doc, onSnapshot } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
-import { ConsultationRoom } from '@/types/consultation'
-import { consultationService } from '@/lib/services/consultation'
+import { firestore } from '../lib/firebase'
+import { ConsultationRoom } from '../types/consultation'
+import { consultationService } from '../lib/services/consultation'
 
 export function useConsultationRoom(roomId: string, isAdmin: boolean = false) {
   const [loading, setLoading] = useState(true)

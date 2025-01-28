@@ -3,10 +3,10 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { fetchServices, Service } from '@/lib/services'
+import { fetchServices, Service } from 'lib/services'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
-import ServicesSkeleton from '@/components/ServicesSkeleton'
+import ServicesSkeleton from '../../components/ServicesSkeleton'
 
 const categories = [
   'all',
@@ -41,7 +41,7 @@ function ServicesList({ services }: { services: Service[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {services.map((service) => (
-        <Link href={service.link} key={service.id} className="group">
+        <Link key={service.id} href={`services/${service.id}`} className="group">
           <div className="bg-white rounded-lg shadow-lg p-6 transition-transform duration-300 group-hover:-translate-y-1">
             <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-600 transition-colors">
               {service.name}
@@ -67,7 +67,6 @@ const ServicesPage = () => {
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all')
   const [priceRange, setPriceRange] = useState<string>('all')
 
-  // Updated React Query options
   const {
     data: services = [],
     isLoading,
@@ -76,37 +75,43 @@ const ServicesPage = () => {
     queryKey: ['services'],
     queryFn: fetchServices,
     staleTime: 1000 * 60 * 5, // Data considered fresh for 5 minutes
-    gcTime: 1000 * 60 * 30, // Changed from cacheTime to gcTime
-    refetchOnWindowFocus: false, // Prevent refetching when window regains focus
+    gcTime: 1000 * 60 * 30, // Cached for 30 minutes
+    refetchOnWindowFocus: false,
   })
 
+  const parsedServices = useMemo(() => {
+    return services.map((service) => ({
+      ...service,
+      parsedPrice: parseInt(service.price.replace(/[^0-9]/g, '')),
+    }))
+  }, [services])
+
   const filteredServices = useMemo(() => {
-    return services.filter((service) => {
+    return parsedServices.filter((service) => {
       const matchesCategory =
         selectedCategory === 'all' || service.category === selectedCategory
       const matchesIndustry =
         selectedIndustry === 'all' ||
         service.industry.includes(selectedIndustry)
 
-      const price = parseInt(service.price.replace(/[^0-9]/g, ''))
       let matchesPrice = true
-
       if (priceRange !== 'all') {
         const [min, max] = priceRange.split('-').map(Number)
         if (max) {
-          matchesPrice = price >= min && price <= max
+          matchesPrice = service.parsedPrice >= min && service.parsedPrice <= max
         } else {
-          matchesPrice = price >= min
+          matchesPrice = service.parsedPrice >= min
         }
       }
 
       return matchesCategory && matchesIndustry && matchesPrice
     })
-  }, [services, selectedCategory, selectedIndustry, priceRange])
+  }, [parsedServices, selectedCategory, selectedIndustry, priceRange])
 
   if (isLoading) return <ServicesSkeleton />
   if (error) return <div className="text-red-500">Failed to load services</div>
-  if (!services.length) return <div>No services found</div>
+  if (!filteredServices.length)
+    return <div>No services match your filters. Please adjust your selection.</div>
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -123,6 +128,7 @@ const ServicesPage = () => {
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full p-2 border rounded-md"
+                aria-label="Select a category"
               >
                 {categories.map((category) => (
                   <option key={category} value={category}>
@@ -139,6 +145,7 @@ const ServicesPage = () => {
                 value={selectedIndustry}
                 onChange={(e) => setSelectedIndustry(e.target.value)}
                 className="w-full p-2 border rounded-md"
+                aria-label="Select an industry"
               >
                 {industries.map((industry) => (
                   <option key={industry} value={industry}>
@@ -155,6 +162,7 @@ const ServicesPage = () => {
                 value={priceRange}
                 onChange={(e) => setPriceRange(e.target.value)}
                 className="w-full p-2 border rounded-md"
+                aria-label="Select a price range"
               >
                 {priceRanges.map((range) => (
                   <option key={range.value} value={range.value}>

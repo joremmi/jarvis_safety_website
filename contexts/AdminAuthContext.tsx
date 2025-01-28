@@ -6,9 +6,8 @@ import {
   onAuthStateChanged,
   signOut as firebaseSignOut,
 } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { auth, firestore } from '../lib/firebase'
 import { doc, getDoc } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
 
 interface AdminAuthContextType {
   admin: boolean

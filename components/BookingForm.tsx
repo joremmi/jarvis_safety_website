@@ -1,8 +1,10 @@
+// components/BookingForm.tsx
+
 'use client'
 
 import React, { useState } from 'react'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
+import { firestore } from '../lib/firebase'
 import LoadingSpinner from './LoadingSpinner'
 
 interface FormData {
@@ -20,14 +22,18 @@ interface FormErrors {
   [key: string]: string
 }
 
-const BookingForm = ({ serviceName = '' }) => {
+interface BookingFormProps {
+  serviceId: string;
+}
+
+const BookingForm: React.FC<BookingFormProps> = ({ serviceId }) => {
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     phone: '',
     date: '',
     message: '',
-    service: serviceName,
+    service: serviceId,
     status: 'pending',
     createdAt: null,
   })
@@ -71,7 +77,7 @@ const BookingForm = ({ serviceName = '' }) => {
         phone: '',
         date: '',
         message: '',
-        service: serviceName,
+        service: serviceId,
         status: 'pending',
         createdAt: null,
       })

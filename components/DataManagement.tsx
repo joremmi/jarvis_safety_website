@@ -11,7 +11,7 @@ import {
   doc,
   where,
 } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
+import { firestore } from '../lib/firebase'
 import LoadingSpinner from './LoadingSpinner'
 
 interface Report {

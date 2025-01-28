@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { doc, updateDoc } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
-import { Consultation } from '@/types/consultation'
+import { firestore } from '../lib/firebase'
+import { Consultation } from '../types/consultation'
 
 interface ConsultationDetailsProps {
   consultation: Consultation

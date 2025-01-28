@@ -4,9 +4,9 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
+import { firestore } from '../lib/firebase'
 import { v4 as uuidv4 } from 'uuid'
-import { fetchServices } from '@/lib/services'
+import { fetchServices } from '../lib/services'
 
 type CategoryType =
   | 'greeting'

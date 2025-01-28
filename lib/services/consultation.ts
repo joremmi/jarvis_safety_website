@@ -9,8 +9,8 @@ import {
   getDocs,
   orderBy,
 } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
-import { ConsultationRoom, ConsultationFormData } from '@/types/consultation'
+import { firestore } from '../../lib/firebase'
+import { ConsultationRoom, ConsultationFormData } from '../../types/consultation'
 
 const COLLECTION_NAME = 'consultation-rooms'
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { redirect } from 'next/navigation'
-import { useAdminAuth } from '@/contexts/AdminAuthContext'
+import { useAdminAuth } from '../../contexts/AdminAuthContext'
 import { useRouter } from 'next/navigation'
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {

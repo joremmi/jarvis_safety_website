@@ -15,10 +15,15 @@ export interface Service {
   description: string
   category: ServiceCategory
   price: string
-  features: string[]
+  features?: string[]
   industry: string[]
   link?: string
   active?: boolean
   createdAt?: Date
   updatedAt?: Date
+}
+
+export type SegmentParams<T> = {
+  params: T
+  id: string
 }

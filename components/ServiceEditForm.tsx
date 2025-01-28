@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { Service, ServiceCategory } from '@/types/service'
+import type { Service, ServiceCategory } from '../types/service'
 
 interface Props {
   service?: Service

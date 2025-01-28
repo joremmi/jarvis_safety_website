@@ -1,9 +1,9 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { consultationService } from '@/lib/services/consultation'
+import { consultationService } from '../lib/services/consultation'
 import LoadingSpinner from './LoadingSpinner'
-import type { ConsultationRoom } from '@/types/consultation'
+import type { ConsultationRoom } from '../types/consultation'
 
 export default function ConsultationList() {
   const {

@@ -1,9 +1,11 @@
+// app/admin/dashboard/page.tsx
+
 'use client'
 
 import { useState, useEffect } from 'react'
 import { collection, query, getDocs, where } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
-import { useAdminAuth } from '@/contexts/AdminAuthContext'
+import { firestore } from 'lib/firebase'; // Corrected import
+import { useAdminAuth } from 'contexts/AdminAuthContext'; // Corrected import
 import { useRouter } from 'next/navigation'
 
 interface DashboardStats {

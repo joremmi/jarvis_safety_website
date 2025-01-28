@@ -1,11 +1,13 @@
+// app/admin/bookings/page.tsx
+
 'use client'
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
-import LoadingSpinner from '@/components/LoadingSpinner'
-import type { Booking } from '@/types/booking'
+import { firestore } from 'lib/firebase'; // Corrected import
+import LoadingSpinner from 'components/LoadingSpinner'; // Corrected import
+import type { Booking } from 'types/booking'; // Corrected import
 
 export default function AdminBookingsPage() {
   const [selectedStatus, setSelectedStatus] = useState<string>('all')

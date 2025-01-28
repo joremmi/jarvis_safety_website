@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
+import { firestore } from '../lib/firebase'
 
 export default function VirtualConsultation() {
   const [isJoining, setIsJoining] = useState(false)

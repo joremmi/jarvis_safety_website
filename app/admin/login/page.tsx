@@ -1,10 +1,12 @@
+// app/admin/login/page.tsx
+
 'use client'
 
 import { useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { auth } from 'lib/firebase'; // Corrected import
 import { useRouter } from 'next/navigation'
-import { useAdminAuth } from '@/contexts/AdminAuthContext'
+import { useAdminAuth } from 'contexts/AdminAuthContext'; // Corrected import
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('')

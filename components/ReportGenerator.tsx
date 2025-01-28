@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { addDoc, collection } from 'firebase/firestore'
-import { firestore } from '@/lib/firebase'
+import { firestore } from '../lib/firebase'
 import LoadingSpinner from './LoadingSpinner'
 
 interface ReportData {

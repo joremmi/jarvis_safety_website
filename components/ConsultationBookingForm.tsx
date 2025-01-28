@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { consultationService } from '@/lib/services/consultation'
-import type { ConsultationFormData } from '@/types/consultation'
+import { consultationService } from '../lib/services/consultation'
+import type { ConsultationFormData } from '../types/consultation'
 
 export default function ConsultationBookingForm() {
   const [loading, setLoading] = useState(false)

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import { useAdminAuth } from '@/contexts/AdminAuthContext'
+import { useAdminAuth } from 'contexts/AdminAuthContext'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)

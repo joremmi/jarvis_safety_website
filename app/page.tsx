@@ -1,10 +1,10 @@
 // app/page.tsx
 
-import WhyChooseUsSection from '@/components/WhyChooseUs'
-import ContactSection from '@/components/Contact'
-import TestimonialSection from '@/components/Testimonial'
+import WhyChooseUsSection from 'components/WhyChooseUs'
+import ContactSection from '../components/Contact'
+import TestimonialSection from '../components/Testimonial'
 import Link from 'next/link'
-import HeroCarousel from '@/components/HeroCarousel'
+import HeroCarousel from '../components/HeroCarousel'
 
 export default function Home() {
   return (
