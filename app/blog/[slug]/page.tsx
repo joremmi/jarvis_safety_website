@@ -11,7 +11,14 @@ interface BlogPost {
   author: string;
 }
 
-export default async function BlogPost({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: {
+    slug: string;
+  };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default async function BlogPost({ params }: PageProps) {
   const docRef = doc(firestore, 'blog-posts', params.slug);
   const docSnap = await getDoc(docRef);
 
@@ -42,4 +49,4 @@ export default async function BlogPost({ params }: { params: { slug: string } })
       />
     </article>
   );
-} 
+}
