@@ -5,12 +5,12 @@ import BookingForm from '@/components/BookingForm';
 import Link from 'next/link';
 
 interface ServicePageProps {
-  params: { slug: string };
+  params: { slug: string } | Promise<{ slug: string }>;
 }
 
 // ✅ Ensure that params are correctly structured
 export default async function ServicePage({ params }: ServicePageProps) {
-  const { slug } = params; // Ensure params is properly destructured
+  const slug = await params.slug; // Ensure it's treated correctly
   const service = await getServiceData(slug);
 
   if (!service) {
@@ -74,12 +74,11 @@ async function getServiceData(slug: string): Promise<Service | null> {
   } as Service;
 }
 
-// ✅ Add `generateStaticParams` for pre-rendering pages dynamically
 export async function generateStaticParams() {
   const servicesRef = collection(firestore, 'services');
   const querySnapshot = await getDocs(servicesRef);
 
   return querySnapshot.docs.map((doc) => ({
-    slug: doc.data().link.replace('/services/', '') // Extract slug from link
+    slug: doc.data().link.replace('/services/', '') // Ensure slug format
   }));
 }
