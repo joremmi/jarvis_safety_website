@@ -3,14 +3,10 @@
 import ConsultationRoom from '@/components/ConsultationRoom';
 
 type AdminConsultationPageProps = {
-  params: {
-    roomId: string;
-  };
+  roomId: string;
 };
 
-function AdminConsultationPage({ params }: AdminConsultationPageProps) {
-  const { roomId } = params;
-
+function AdminConsultationPage({ roomId }: AdminConsultationPageProps) {
   return (
     <div>
       <ConsultationRoom roomId={roomId} />
