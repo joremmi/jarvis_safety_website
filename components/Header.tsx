@@ -65,9 +65,6 @@ export default function Header() {
                         <Link href="/contact" className="hover:opacity-80 transition-opacity">
                             Contact
                         </Link>
-                        <Link href="/blog" className="hover:opacity-80 transition-opacity">
-                            Blog
-                        </Link>
                         <Link href="/team" className="hover:opacity-80 transition-opacity">
                             Team
                         </Link>
