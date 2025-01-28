@@ -3,9 +3,13 @@ import { firestore } from '@/lib/firebase';
 import { Service } from '@/lib/services';
 import BookingForm from '@/components/BookingForm';
 import Link from 'next/link';
-import { PageProps } from '@/types/next';
 
-export default async function ServicePage({ params }: PageProps) {
+interface ServicePageProps {
+  params: {
+    slug: string;
+  };
+}
+export default async function ServicePage({ params }: ServicePageProps) {
   const service = await getServiceData(params.slug);
 
   if (!service) {
