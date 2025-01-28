@@ -4,16 +4,16 @@ const nextConfig = {
     domains: [
       // Add your image domains here
       'your-storage-domain.com',
-      'firebasestorage.googleapis.com'
+      'firebasestorage.googleapis.com',
     ],
   },
   webpack: (config) => {
     config.externals.push({
       'utf-8-validate': 'commonjs utf-8-validate',
-      'bufferutil': 'commonjs bufferutil',
-    });
-    return config;
+      bufferutil: 'commonjs bufferutil',
+    })
+    return config
   },
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig

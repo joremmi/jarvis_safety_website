@@ -1,53 +1,66 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import ServiceEditForm from '@/components/ServiceEditForm';
-import type { Service } from '@/types/service';
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from 'firebase/firestore'
+import { firestore } from '@/lib/firebase'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import ServiceEditForm from '@/components/ServiceEditForm'
+import type { Service } from '@/types/service'
 
 export default function AdminServicesPage() {
-  const queryClient = useQueryClient();
-  const [isEditing, setIsEditing] = useState(false);
-  const [selectedService, setSelectedService] = useState<Service | undefined>(undefined);
+  const queryClient = useQueryClient()
+  const [isEditing, setIsEditing] = useState(false)
+  const [selectedService, setSelectedService] = useState<Service | undefined>(
+    undefined,
+  )
 
-  const { data: services = [], isLoading, error } = useQuery({
+  const {
+    data: services = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['admin-services'],
     queryFn: async () => {
-      const snapshot = await getDocs(collection(firestore, 'services'));
-      return snapshot.docs.map(doc => ({
+      const snapshot = await getDocs(collection(firestore, 'services'))
+      return snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
-      })) as Service[];
-    }
-  });
+        ...doc.data(),
+      })) as Service[]
+    },
+  })
 
   const saveMutation = useMutation({
     mutationFn: async (service: Service) => {
-      const { id, ...serviceData } = service;
+      const { id, ...serviceData } = service
       if (id) {
-        await updateDoc(doc(firestore, 'services', id), serviceData);
+        await updateDoc(doc(firestore, 'services', id), serviceData)
       } else {
-        await addDoc(collection(firestore, 'services'), serviceData);
+        await addDoc(collection(firestore, 'services'), serviceData)
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-services'] });
-      setIsEditing(false);
-      setSelectedService(undefined);
-    }
-  });
+      queryClient.invalidateQueries({ queryKey: ['admin-services'] })
+      setIsEditing(false)
+      setSelectedService(undefined)
+    },
+  })
 
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this service?')) {
-      await deleteDoc(doc(firestore, 'services', id));
+      await deleteDoc(doc(firestore, 'services', id))
     }
-  };
+  }
 
-  if (isLoading) return <LoadingSpinner />;
-  if (error) return <div>Error loading services</div>;
+  if (isLoading) return <LoadingSpinner />
+  if (error) return <div>Error loading services</div>
 
   return (
     <div className="p-6">
@@ -62,13 +75,15 @@ export default function AdminServicesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {services.map(service => (
+        {services.map((service) => (
           <div key={service.id} className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-xl font-semibold mb-2">{service.name}</h3>
             <p className="text-gray-600 mb-4">{service.description}</p>
             <ul className="list-disc ml-5 mb-4">
               {service.features.map((feature, index) => (
-                <li key={index} className="text-gray-600">{feature}</li>
+                <li key={index} className="text-gray-600">
+                  {feature}
+                </li>
               ))}
             </ul>
             {service.price && (
@@ -77,8 +92,8 @@ export default function AdminServicesPage() {
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => {
-                  setSelectedService(service);
-                  setIsEditing(true);
+                  setSelectedService(service)
+                  setIsEditing(true)
                 }}
                 className="text-blue-600 hover:text-blue-800"
               >
@@ -108,5 +123,5 @@ export default function AdminServicesPage() {
         </div>
       )}
     </div>
-  );
-} 
+  )
+}

@@ -1,17 +1,17 @@
-"use client";
+'use client'
 
-import React, { useState } from 'react';
-import { addDoc, collection } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
-import LoadingSpinner from './LoadingSpinner';
+import React, { useState } from 'react'
+import { addDoc, collection } from 'firebase/firestore'
+import { firestore } from '@/lib/firebase'
+import LoadingSpinner from './LoadingSpinner'
 
 interface ReportData {
-  title: string;
-  type: string;
-  date: string;
-  findings: string[];
-  recommendations: string[];
-  attachments: File[];
+  title: string
+  type: string
+  date: string
+  findings: string[]
+  recommendations: string[]
+  attachments: File[]
 }
 
 const ReportGenerator = () => {
@@ -21,56 +21,58 @@ const ReportGenerator = () => {
     date: new Date().toISOString().split('T')[0],
     findings: [''],
     recommendations: [''],
-    attachments: []
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+    attachments: [],
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
-    const { name, value } = e.target;
-    setReportData(prev => ({
+    const { name, value } = e.target
+    setReportData((prev) => ({
       ...prev,
-      [name]: value
-    }));
-  };
+      [name]: value,
+    }))
+  }
 
   const handleArrayInput = (
     index: number,
     value: string,
-    field: 'findings' | 'recommendations'
+    field: 'findings' | 'recommendations',
   ) => {
-    setReportData(prev => ({
+    setReportData((prev) => ({
       ...prev,
-      [field]: prev[field].map((item, i) => (i === index ? value : item))
-    }));
-  };
+      [field]: prev[field].map((item, i) => (i === index ? value : item)),
+    }))
+  }
 
   const addArrayItem = (field: 'findings' | 'recommendations') => {
-    setReportData(prev => ({
+    setReportData((prev) => ({
       ...prev,
-      [field]: [...prev[field], '']
-    }));
-  };
+      [field]: [...prev[field], ''],
+    }))
+  }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setReportData(prev => ({
+      setReportData((prev) => ({
         ...prev,
-        attachments: [...Array.from(e.target.files!)]
-      }));
+        attachments: [...Array.from(e.target.files!)],
+      }))
     }
-  };
+  }
 
   const generateReport = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
 
     try {
       // Add report to Firestore
-      await addDoc(collection(firestore, 'reports'), reportData);
+      await addDoc(collection(firestore, 'reports'), reportData)
 
       // Reset form
       setReportData({
@@ -79,25 +81,25 @@ const ReportGenerator = () => {
         date: new Date().toISOString().split('T')[0],
         findings: [''],
         recommendations: [''],
-        attachments: []
-      });
-
+        attachments: [],
+      })
     } catch (err) {
-      setError('Failed to generate report');
-      console.error(err);
+      setError('Failed to generate report')
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <form onSubmit={generateReport} className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow">
+    <form
+      onSubmit={generateReport}
+      className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow"
+    >
       <h2 className="text-2xl font-bold mb-6">Generate Report</h2>
 
       {error && (
-        <div className="bg-red-100 text-red-700 p-4 rounded mb-4">
-          {error}
-        </div>
+        <div className="bg-red-100 text-red-700 p-4 rounded mb-4">{error}</div>
       )}
 
       <div className="space-y-6">
@@ -139,7 +141,9 @@ const ReportGenerator = () => {
             <div key={index} className="mt-2">
               <textarea
                 value={finding}
-                onChange={(e) => handleArrayInput(index, e.target.value, 'findings')}
+                onChange={(e) =>
+                  handleArrayInput(index, e.target.value, 'findings')
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                 rows={3}
               />
@@ -162,7 +166,9 @@ const ReportGenerator = () => {
             <div key={index} className="mt-2">
               <textarea
                 value={rec}
-                onChange={(e) => handleArrayInput(index, e.target.value, 'recommendations')}
+                onChange={(e) =>
+                  handleArrayInput(index, e.target.value, 'recommendations')
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                 rows={3}
               />
@@ -200,7 +206,7 @@ const ReportGenerator = () => {
         </button>
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default ReportGenerator; 
+export default ReportGenerator

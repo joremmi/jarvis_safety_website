@@ -1,33 +1,42 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import type { Booking } from '@/types/booking';
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore'
+import { firestore } from '@/lib/firebase'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import type { Booking } from '@/types/booking'
 
 export default function AdminBookingsPage() {
-  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<string>('all')
 
-  const { data: bookings = [], isLoading, error } = useQuery({
+  const {
+    data: bookings = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['bookings', selectedStatus],
     queryFn: async () => {
-      const bookingsRef = collection(firestore, 'bookings');
-      const q = selectedStatus === 'all' 
-        ? query(bookingsRef, orderBy('date', 'desc'))
-        : query(bookingsRef, where('status', '==', selectedStatus), orderBy('date', 'desc'));
-      
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Booking[];
-    }
-  });
+      const bookingsRef = collection(firestore, 'bookings')
+      const q =
+        selectedStatus === 'all'
+          ? query(bookingsRef, orderBy('date', 'desc'))
+          : query(
+              bookingsRef,
+              where('status', '==', selectedStatus),
+              orderBy('date', 'desc'),
+            )
 
-  if (isLoading) return <LoadingSpinner />;
-  if (error) return <div>Error loading bookings</div>;
+      const snapshot = await getDocs(q)
+      return snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Booking[]
+    },
+  })
+
+  if (isLoading) return <LoadingSpinner />
+  if (error) return <div>Error loading bookings</div>
 
   return (
     <div>
@@ -70,7 +79,9 @@ export default function AdminBookingsPage() {
             {bookings.map((booking) => (
               <tr key={booking.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{booking.name}</div>
+                  <div className="text-sm font-medium text-gray-900">
+                    {booking.name}
+                  </div>
                   <div className="text-sm text-gray-500">{booking.email}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -82,10 +93,16 @@ export default function AdminBookingsPage() {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                    booking.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
-                    'bg-red-100 text-red-800'}`}>
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    ${
+                      booking.status === 'pending'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : booking.status === 'confirmed'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                    }`}
+                  >
                     {booking.status}
                   </span>
                 </td>
@@ -103,5 +120,5 @@ export default function AdminBookingsPage() {
         </table>
       </div>
     </div>
-  );
-} 
+  )
+}

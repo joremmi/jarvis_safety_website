@@ -5,4 +5,6 @@ export type PageProps = {
   searchParams?: Record<string, string | string[] | undefined>
 }
 
-export type NextPageWithProps<T = Record<string, unknown>> = NextPage<T & PageProps>
+export type NextPageWithProps<T = Record<string, unknown>> = NextPage<
+  T & PageProps
+>

@@ -1,16 +1,18 @@
-"use client";
+'use client'
 
 const FAQSection = () => {
   const faqs = [
     {
-      question: "What services do you offer?",
-      answer: "We specialize in compliance audits, hazard management, and employee training.",
+      question: 'What services do you offer?',
+      answer:
+        'We specialize in compliance audits, hazard management, and employee training.',
     },
     {
-      question: "How can I get started?",
-      answer: "Contact us through our website or give us a call to discuss your needs.",
+      question: 'How can I get started?',
+      answer:
+        'Contact us through our website or give us a call to discuss your needs.',
     },
-  ];
+  ]
 
   return (
     <div className="container mx-auto px-4 text-center">
@@ -25,7 +27,7 @@ const FAQSection = () => {
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default FAQSection;
+export default FAQSection

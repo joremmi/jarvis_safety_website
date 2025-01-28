@@ -4,7 +4,7 @@ export default function ServicesSkeleton() {
       <div className="container mx-auto px-4 py-12 mt-12">
         {/* Title Skeleton */}
         <div className="h-10 w-64 bg-gray-200 rounded mx-auto mb-12 animate-pulse"></div>
-        
+
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Skeleton */}
           <div className="w-full md:w-64 space-y-6">
@@ -46,5 +46,5 @@ export default function ServicesSkeleton() {
         </div>
       </div>
     </div>
-  );
-} 
+  )
+}

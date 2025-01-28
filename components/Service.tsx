@@ -1,35 +1,41 @@
-import React from "react";
+import React from 'react'
 
 interface ServiceProps {
-  title: string;
-  description: string;
-  link: string;
-  category: string;
-  price: string;
+  title: string
+  description: string
+  link: string
+  category: string
+  price: string
 }
 
 const categoryImages: { [key: string]: string } = {
-  Training: "/images/training-bg.jpg",
-  Audit: "/images/audit-bg.jpg",
-  Policy: "/images/policy-bg.jpg",
-  Compliance: "/images/compliance-bg.jpg",
-  Hazmat: "/images/hazmat-bg.jpg",
-  Standardization: "/images/standardization-bg.jpg",
-  Medical: "/images/medical-bg.jpg",
-};
+  Training: '/images/training-bg.jpg',
+  Audit: '/images/audit-bg.jpg',
+  Policy: '/images/policy-bg.jpg',
+  Compliance: '/images/compliance-bg.jpg',
+  Hazmat: '/images/hazmat-bg.jpg',
+  Standardization: '/images/standardization-bg.jpg',
+  Medical: '/images/medical-bg.jpg',
+}
 
-const Service = ({ title, description, link, category, price }: ServiceProps) => {
-  const backgroundImage = categoryImages[category] || "/images/default-bg.jpg";
+const Service = ({
+  title,
+  description,
+  link,
+  category,
+  price,
+}: ServiceProps) => {
+  const backgroundImage = categoryImages[category] || '/images/default-bg.jpg'
 
   return (
     <section
       className="relative text-black flex items-center rounded-lg shadow-lg overflow-hidden mb-8"
       style={{
-        height: "300px",
-        width: "100%",
+        height: '300px',
+        width: '100%',
         backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 1) 40%, rgba(255, 255, 255, 0) 75%), url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "right center",
+        backgroundSize: 'cover',
+        backgroundPosition: 'right center',
       }}
     >
       <div className="w-1/2 p-6 z-10">
@@ -46,7 +52,7 @@ const Service = ({ title, description, link, category, price }: ServiceProps) =>
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Service;
+export default Service

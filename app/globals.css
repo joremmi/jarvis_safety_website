@@ -62,11 +62,10 @@
     @apply hidden md:block fixed top-0 left-0 h-screen;
     width: 16rem;
   }
-  
+
   .main-with-sidebar {
     @apply md:ml-64;
   }
-
 }
 
 .arr {
@@ -91,17 +90,21 @@
   min-height: 20pc;
 }
 
-.bg-blk{
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+.bg-blk {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
   backdrop-filter: blur(20px);
 }
 
-.bg{
-  background:rgba(255, 255, 255, 0.84);
+.bg {
+  background: rgba(255, 255, 255, 0.84);
   backdrop-filter: blur(10px);
 }
 
-.d-fl{
+.d-fl {
   display: flex;
   gap: 2pc;
   align-items: baseline;
@@ -109,15 +112,15 @@
   margin-top: 2pc;
 }
 
-.h-fl{
+.h-fl {
   height: 100vh;
 }
 
-.text-bg{
+.text-bg {
   color: var(--foreground);
 }
 
-.img-cstm{
+.img-cstm {
   filter: opacity(0.75);
   background: #00000042;
   border-radius: 50%;

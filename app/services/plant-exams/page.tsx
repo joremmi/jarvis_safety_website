@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import React from "react";
-import BookingForm from "@/components/BookingForm";
+import React from 'react'
+import BookingForm from '@/components/BookingForm'
 
 const PlantExamsPage = () => {
   return (
@@ -9,7 +9,8 @@ const PlantExamsPage = () => {
       <div className="w-1/2 pr-4 p-8 bg-dist h-fl">
         <h1 className="text-4xl font-bold mb-4">Plant Examinations</h1>
         <p className="text-lg mb-6">
-          Our plant examination services help ensure your machinery and equipment are safe, reliable, and compliant with regulations.
+          Our plant examination services help ensure your machinery and
+          equipment are safe, reliable, and compliant with regulations.
         </p>
         <ul className="list-disc ml-6">
           <li>Inspection and testing of equipment</li>
@@ -21,7 +22,7 @@ const PlantExamsPage = () => {
         <BookingForm serviceName="Plant Examinations" />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PlantExamsPage;
+export default PlantExamsPage

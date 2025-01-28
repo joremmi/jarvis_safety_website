@@ -1,5 +1,5 @@
 interface ErrorProps {
-  message?: string;
+  message?: string
 }
 
 export const Error = ({ message = 'Something went wrong' }: ErrorProps) => {
@@ -10,5 +10,5 @@ export const Error = ({ message = 'Something went wrong' }: ErrorProps) => {
         <p>{message}</p>
       </div>
     </div>
-  );
-}; 
+  )
+}

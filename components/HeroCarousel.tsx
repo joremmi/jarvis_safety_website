@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 
 const images = [
   '/images/hero/bg1.jpg',
@@ -10,18 +10,18 @@ const images = [
   '/images/hero/bg5.jpg',
   '/images/hero/bg6.jpg',
   '/images/hero/bg7.jpg',
-];
+]
 
 export default function HeroCarousel() {
-  const [currentImage, setCurrentImage] = useState(0);
+  const [currentImage, setCurrentImage] = useState(0)
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % images.length);
-    }, 10000); // Change image every 5 seconds
+      setCurrentImage((prev) => (prev + 1) % images.length)
+    }, 10000) // Change image every 5 seconds
 
-    return () => clearInterval(timer);
-  }, []);
+    return () => clearInterval(timer)
+  }, [])
 
   return (
     <>
@@ -37,5 +37,5 @@ export default function HeroCarousel() {
         />
       ))}
     </>
-  );
-} 
+  )
+}

@@ -1,10 +1,10 @@
 // app/page.tsx
 
-import WhyChooseUsSection from "@/components/WhyChooseUs";
-import ContactSection from "@/components/Contact";
-import TestimonialSection from "@/components/Testimonial";
-import Link from 'next/link';
-import HeroCarousel from '@/components/HeroCarousel';
+import WhyChooseUsSection from '@/components/WhyChooseUs'
+import ContactSection from '@/components/Contact'
+import TestimonialSection from '@/components/Testimonial'
+import Link from 'next/link'
+import HeroCarousel from '@/components/HeroCarousel'
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
       <section className="relative h-[100vh] bg-gradient-to-r from-blue-800 to-blue-600 overflow-hidden">
         {/* Background Carousel */}
         <HeroCarousel />
-        
+
         {/* Gradient Overlay */}
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-blue-800/90 via-blue-600/70 to-transparent" />
 
@@ -24,13 +24,14 @@ export default function Home() {
               Be safe in a healthy environment
             </h1>
             <p className="text-lg md:text-xl mb-8 text-gray-100">
-              Your trusted partner in workplace safety, offering comprehensive solutions for compliance, 
-              risk management, and employee training. With decades of experience and a commitment to 
-              excellence, we help businesses create safer work environments and protect their most 
+              Your trusted partner in workplace safety, offering comprehensive
+              solutions for compliance, risk management, and employee training.
+              With decades of experience and a commitment to excellence, we help
+              businesses create safer work environments and protect their most
               valuable asset - their people.
             </p>
-            <Link 
-              href="/services" 
+            <Link
+              href="/services"
               className="inline-block bg-white text-blue-800 px-8 py-3 rounded-lg 
                 font-semibold hover:bg-gray-100 transition-colors"
             >
@@ -54,8 +55,6 @@ export default function Home() {
       <section className="py-20 bg-gray-50">
         <ContactSection />
       </section>
-
-
     </main>
-  );
+  )
 }

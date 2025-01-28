@@ -1,24 +1,30 @@
-"use client";
+'use client'
 
-import React, { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
+import React, { useState } from 'react'
+import { loadStripe } from '@stripe/stripe-js'
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+)
 
 interface PaymentProps {
-  amount: number;
-  serviceId: string;
-  serviceName: string;
+  amount: number
+  serviceId: string
+  serviceName: string
 }
 
-const Payment: React.FC<PaymentProps> = ({ amount, serviceId, serviceName }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const Payment: React.FC<PaymentProps> = ({
+  amount,
+  serviceId,
+  serviceName,
+}) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handlePayment = async () => {
     try {
-      setLoading(true);
-      setError(null);
+      setLoading(true)
+      setError(null)
 
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
@@ -30,37 +36,35 @@ const Payment: React.FC<PaymentProps> = ({ amount, serviceId, serviceName }) => 
           serviceId,
           serviceName,
         }),
-      });
+      })
 
-      const session = await response.json();
+      const session = await response.json()
 
-      const stripe = await stripePromise;
-      if (!stripe) throw new Error('Stripe failed to load');
+      const stripe = await stripePromise
+      if (!stripe) throw new Error('Stripe failed to load')
 
       const result = await stripe.redirectToCheckout({
         sessionId: session.id,
-      });
+      })
 
       if (result.error) {
-        throw new Error(result.error.message);
+        throw new Error(result.error.message)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Payment failed');
+      setError(err instanceof Error ? err.message : 'Payment failed')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow">
       <h3 className="text-xl font-semibold mb-4">Payment Details</h3>
       <p className="mb-4">Service: {serviceName}</p>
       <p className="mb-6">Amount: ${amount}</p>
-      
+
       {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-          {error}
-        </div>
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
       )}
 
       <button
@@ -73,7 +77,7 @@ const Payment: React.FC<PaymentProps> = ({ amount, serviceId, serviceName }) => 
         {loading ? 'Processing...' : 'Pay Now'}
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default Payment; 
+export default Payment

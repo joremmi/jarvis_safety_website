@@ -1,37 +1,39 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
-import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { useState } from 'react'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '@/lib/firebase'
+import { useRouter } from 'next/navigation'
+import { useAdminAuth } from '@/contexts/AdminAuthContext'
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const router = useRouter();
-  const { admin } = useAdminAuth();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const router = useRouter()
+  const { admin } = useAdminAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+    e.preventDefault()
+    setError('')
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.replace('/admin/dashboard');
+      await signInWithEmailAndPassword(auth, email, password)
+      router.replace('/admin/dashboard')
     } catch (error) {
-      console.error('Login error:', error);
-      setError('Invalid email or password');
+      console.error('Login error:', error)
+      setError('Invalid email or password')
     }
-  };
+  }
 
   // If already logged in, show a message instead of redirecting
   if (admin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="max-w-md w-full p-8 bg-white rounded-lg shadow text-center">
-          <p className="text-lg text-gray-600 mb-4">You are already logged in as an admin.</p>
+          <p className="text-lg text-gray-600 mb-4">
+            You are already logged in as an admin.
+          </p>
           <button
             onClick={() => router.push('/admin/dashboard')}
             className="text-indigo-600 hover:text-indigo-800"
@@ -40,7 +42,7 @@ export default function AdminLoginPage() {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -96,5 +98,5 @@ export default function AdminLoginPage() {
         </form>
       </div>
     </div>
-  );
-} 
+  )
+}

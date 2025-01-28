@@ -1,60 +1,56 @@
 // app/services/page.tsx
 
-"use client";
+'use client'
 
-import React, { useState, useMemo } from "react";
-import { fetchServices, Service } from "@/lib/services";
-import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
-import ServicesSkeleton from '@/components/ServicesSkeleton';
+import React, { useState, useMemo } from 'react'
+import { fetchServices, Service } from '@/lib/services'
+import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
+import ServicesSkeleton from '@/components/ServicesSkeleton'
 
 const categories = [
-  "all",
-  "Training Services",
-  "Audit Services",
-  "Policy Services",
-  "Compliance Services",
-  "Hazardous Material Services",
-  "Standardization Services",
-  "Medical Services"
-];
+  'all',
+  'Training Services',
+  'Audit Services',
+  'Policy Services',
+  'Compliance Services',
+  'Hazardous Material Services',
+  'Standardization Services',
+  'Medical Services',
+]
 
 const industries = [
-  "all",
-  "Manufacturing",
-  "Construction",
-  "Healthcare",
-  "Agriculture",
-  "Mining",
-  "Oil & Gas",
-  "Transportation"
-];
+  'all',
+  'Manufacturing',
+  'Construction',
+  'Healthcare',
+  'Agriculture',
+  'Mining',
+  'Oil & Gas',
+  'Transportation',
+]
 
 const priceRanges = [
-  { label: "All Prices", value: "all" },
-  { label: "Under KES 30,000", value: "0-30000" },
-  { label: "KES 30,000 - 50,000", value: "30000-50000" },
-  { label: "Over KES 50,000", value: "50000+" }
-];
+  { label: 'All Prices', value: 'all' },
+  { label: 'Under KES 30,000', value: '0-30000' },
+  { label: 'KES 30,000 - 50,000', value: '30000-50000' },
+  { label: 'Over KES 50,000', value: '50000+' },
+]
 
 function ServicesList({ services }: { services: Service[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {services.map((service) => (
-        <Link 
-          href={service.link} 
-          key={service.id}
-          className="group"
-        >
+        <Link href={service.link} key={service.id} className="group">
           <div className="bg-white rounded-lg shadow-lg p-6 transition-transform duration-300 group-hover:-translate-y-1">
             <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-600 transition-colors">
               {service.name}
             </h3>
-            <p className="text-gray-600 mb-4">
-              {service.description}
-            </p>
+            <p className="text-gray-600 mb-4">{service.description}</p>
             <div className="flex justify-between items-center">
-              <span className="text-blue-600 font-semibold">{service.price}</span>
+              <span className="text-blue-600 font-semibold">
+                {service.price}
+              </span>
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
                 {service.category}
               </span>
@@ -63,60 +59,67 @@ function ServicesList({ services }: { services: Service[] }) {
         </Link>
       ))}
     </div>
-  );
+  )
 }
 
 const ServicesPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedIndustry, setSelectedIndustry] = useState<string>("all");
-  const [priceRange, setPriceRange] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('all')
+  const [priceRange, setPriceRange] = useState<string>('all')
 
   // Updated React Query options
-  const { data: services = [], isLoading, error } = useQuery({
+  const {
+    data: services = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['services'],
     queryFn: fetchServices,
-    staleTime: 1000 * 60 * 5,    // Data considered fresh for 5 minutes
-    gcTime: 1000 * 60 * 30,      // Changed from cacheTime to gcTime
-    refetchOnWindowFocus: false   // Prevent refetching when window regains focus
-  });
+    staleTime: 1000 * 60 * 5, // Data considered fresh for 5 minutes
+    gcTime: 1000 * 60 * 30, // Changed from cacheTime to gcTime
+    refetchOnWindowFocus: false, // Prevent refetching when window regains focus
+  })
 
   const filteredServices = useMemo(() => {
-    return services.filter(service => {
-      const matchesCategory = selectedCategory === "all" || service.category === selectedCategory;
-      const matchesIndustry = selectedIndustry === "all" || service.industry.includes(selectedIndustry);
-      
-      const price = parseInt(service.price.replace(/[^0-9]/g, ''));
-      let matchesPrice = true;
-      
-      if (priceRange !== "all") {
-        const [min, max] = priceRange.split("-").map(Number);
+    return services.filter((service) => {
+      const matchesCategory =
+        selectedCategory === 'all' || service.category === selectedCategory
+      const matchesIndustry =
+        selectedIndustry === 'all' ||
+        service.industry.includes(selectedIndustry)
+
+      const price = parseInt(service.price.replace(/[^0-9]/g, ''))
+      let matchesPrice = true
+
+      if (priceRange !== 'all') {
+        const [min, max] = priceRange.split('-').map(Number)
         if (max) {
-          matchesPrice = price >= min && price <= max;
+          matchesPrice = price >= min && price <= max
         } else {
-          matchesPrice = price >= min;
+          matchesPrice = price >= min
         }
       }
 
-      return matchesCategory && matchesIndustry && matchesPrice;
-    });
-  }, [services, selectedCategory, selectedIndustry, priceRange]);
+      return matchesCategory && matchesIndustry && matchesPrice
+    })
+  }, [services, selectedCategory, selectedIndustry, priceRange])
 
-  if (isLoading) return <ServicesSkeleton />;
-  if (error) return <div className="text-red-500">Failed to load services</div>;
-  if (!services.length) return <div>No services found</div>;
+  if (isLoading) return <ServicesSkeleton />
+  if (error) return <div className="text-red-500">Failed to load services</div>
+  if (!services.length) return <div>No services found</div>
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-12 mt-12">
         <h1 className="text-4xl font-bold text-center mb-12">Our Services</h1>
-        
+
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
           <div className="w-full md:w-64 space-y-6">
             {/* Categories */}
             <div>
               <h3 className="text-lg font-semibold mb-3">Categories</h3>
-              <select 
+              <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full p-2 border rounded-md"
@@ -132,7 +135,7 @@ const ServicesPage = () => {
             {/* Industries */}
             <div>
               <h3 className="text-lg font-semibold mb-3">Industries</h3>
-              <select 
+              <select
                 value={selectedIndustry}
                 onChange={(e) => setSelectedIndustry(e.target.value)}
                 className="w-full p-2 border rounded-md"
@@ -148,7 +151,7 @@ const ServicesPage = () => {
             {/* Price Range */}
             <div>
               <h3 className="text-lg font-semibold mb-3">Price Range</h3>
-              <select 
+              <select
                 value={priceRange}
                 onChange={(e) => setPriceRange(e.target.value)}
                 className="w-full p-2 border rounded-md"
@@ -169,8 +172,7 @@ const ServicesPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ServicesPage;
-
+export default ServicesPage
