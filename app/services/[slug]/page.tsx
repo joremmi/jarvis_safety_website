@@ -6,8 +6,37 @@ import { Service } from '@/lib/services';
 import BookingForm from '@/components/BookingForm';
 import Link from 'next/link';
 
+// Fetch service data from Firestore
+async function getServiceData(slug: string): Promise<Service | null> {
+  const serviceLink = `/services/${slug}`;
+  const servicesRef = collection(firestore, 'services');
+  const q = query(servicesRef, where('link', '==', serviceLink));
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.empty) {
+    return null;
+  }
+
+  return {
+    id: querySnapshot.docs[0].id,
+    ...querySnapshot.docs[0].data(),
+  } as Service;
+}
+
+// Generate static params for all services
+export async function generateStaticParams() {
+  const servicesRef = collection(firestore, 'services');
+  const querySnapshot = await getDocs(servicesRef);
+
+  return querySnapshot.docs.map((doc) => ({
+    slug: doc.data().link.replace('/services/', ''),
+  }));
+}
+
 // Service page component
-export default function ServicePage({ service }: { service: Service | null }) {
+export default async function ServicePage({ params }: { params: { slug: string } }) {
+  const service = await getServiceData(params.slug);
+
   if (!service) {
     return (
       <div className="min-h-screen p-8">
@@ -50,47 +79,4 @@ export default function ServicePage({ service }: { service: Service | null }) {
       </div>
     </div>
   );
-}
-
-// `generateStaticProps` is the recommended way to fetch data in Next.js 13+ `app` directory
-export async function generateStaticProps({ params }: { params: { slug: string } }) {
-  const service = await getServiceData(params.slug);
-
-  return {
-    props: {
-      service,
-    },
-  };
-}
-
-// `generateStaticPaths` for dynamic route handling
-export async function generateStaticPaths() {
-  const servicesRef = collection(firestore, 'services');
-  const querySnapshot = await getDocs(servicesRef);
-
-  const paths = querySnapshot.docs.map((doc) => ({
-    params: { slug: doc.data().link.replace('/services/', '') },
-  }));
-
-  return {
-    paths,
-    fallback: 'blocking', // Wait for new pages to be generated before serving them
-  };
-}
-
-// Fetch service data from Firestore
-async function getServiceData(slug: string): Promise<Service | null> {
-  const serviceLink = `/services/${slug}`;
-  const servicesRef = collection(firestore, 'services');
-  const q = query(servicesRef, where('link', '==', serviceLink));
-  const querySnapshot = await getDocs(q);
-
-  if (querySnapshot.empty) {
-    return null;
-  }
-
-  return {
-    id: querySnapshot.docs[0].id,
-    ...querySnapshot.docs[0].data(),
-  } as Service;
 }
