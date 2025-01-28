@@ -2,16 +2,19 @@
 
 import ConsultationRoom from '@/components/ConsultationRoom';
 
-type AdminConsultationPageProps = {
-  roomId: string;
-};
+interface AdminConsultationPageProps {
+  params: {
+    roomId: string;
+  };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
 
-function AdminConsultationPage({ roomId }: AdminConsultationPageProps) {
+export default function AdminConsultationPage(props: AdminConsultationPageProps) {
+  const { roomId } = props.params;
+  
   return (
     <div>
-      <ConsultationRoom roomId={roomId} />
+      <ConsultationRoom roomId={roomId} isAdmin={true} />
     </div>
   );
 }
-
-export default AdminConsultationPage;
