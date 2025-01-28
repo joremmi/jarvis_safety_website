@@ -6,17 +6,12 @@ import { Service } from '@/lib/services';
 import BookingForm from '@/components/BookingForm';
 import Link from 'next/link';
 
+// Ensure this is a static page with params
 interface ServicePageProps {
-  params: { slug: string };
+  service: Service | null;
 }
 
-
-export default async function ServicePage(props: ServicePageProps) {
-  const { params } = props;
-  const slug = params?.slug ?? ""; // Ensure it has a default value
-
-  const service = await getServiceData(slug);
-
+export default function ServicePage({ service }: ServicePageProps) {
   if (!service) {
     return (
       <div className="min-h-screen p-8">
@@ -61,6 +56,29 @@ export default async function ServicePage(props: ServicePageProps) {
   );
 }
 
+export async function getStaticPaths() {
+  const servicesRef = collection(firestore, 'services');
+  const querySnapshot = await getDocs(servicesRef);
+
+  const paths = querySnapshot.docs.map((doc) => ({
+    params: { slug: doc.data().link.replace('/services/', '') },
+  }));
+
+  return {
+    paths,
+    fallback: 'blocking', // or 'false' if you want to show a 404 for missing paths
+  };
+}
+
+export async function getStaticProps({ params }: { params: { slug: string } }) {
+  const service = await getServiceData(params.slug);
+
+  return {
+    props: {
+      service,
+    },
+  };
+}
 
 // ✅ Fetch service data properly
 async function getServiceData(slug: string): Promise<Service | null> {
@@ -68,23 +86,13 @@ async function getServiceData(slug: string): Promise<Service | null> {
   const servicesRef = collection(firestore, 'services');
   const q = query(servicesRef, where('link', '==', serviceLink));
   const querySnapshot = await getDocs(q);
-  
+
   if (querySnapshot.empty) {
     return null;
   }
 
   return {
     id: querySnapshot.docs[0].id,
-    ...querySnapshot.docs[0].data()
+    ...querySnapshot.docs[0].data(),
   } as Service;
 }
-
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const servicesRef = collection(firestore, 'services');
-  const querySnapshot = await getDocs(servicesRef);
-
-  return querySnapshot.docs.map((doc) => ({
-    slug: doc.data().link.replace('/services/', ''), // Ensure correct format
-  }));
-}
-
