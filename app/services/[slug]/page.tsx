@@ -4,6 +4,13 @@ import { Service } from '@/lib/services';
 import BookingForm from '@/components/BookingForm';
 import Link from 'next/link';
 
+interface ServicePageProps {
+  params: {
+    slug: string;
+  };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
 async function getServiceData(slug: string): Promise<Service | null> {
   const serviceLink = `/services/${slug}`;
   const servicesRef = collection(firestore, 'services');
@@ -20,7 +27,7 @@ async function getServiceData(slug: string): Promise<Service | null> {
   } as Service;
 }
 
-export default async function ServicePage({ params }: { params: { slug: string } }) {
+export default async function ServicePage({ params }: ServicePageProps) {
   const service = await getServiceData(params.slug);
 
   if (!service) {
@@ -68,4 +75,4 @@ export default async function ServicePage({ params }: { params: { slug: string }
       </div>
     </div>
   );
-} 
+}

@@ -148,7 +148,7 @@ export default function Header() {
                         ) : (
                             <Link 
                                 href="/admin/login" 
-                                className="block text-blue-600 hover:text-blue-700"
+                                className="block hover:text-blue-600"
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 Admin Login
